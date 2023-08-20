@@ -1,4 +1,4 @@
-﻿namespace BlogPetNews.API.Domain.Enuem
+﻿namespace BlogPetNews.API.Domain.Enums
 {
     public enum RolesUser
     {

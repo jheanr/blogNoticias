@@ -1,8 +1,6 @@
 ﻿using BlogPetNews.API.Domain.News;
-using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace BlogPetNews.API.Infra.News
 {

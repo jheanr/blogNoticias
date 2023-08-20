@@ -1,5 +1,4 @@
 ﻿using BlogPetNews.API.Infra.Contexts;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogPetNews.API.Infra.Utils

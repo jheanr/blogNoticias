@@ -1,5 +1,5 @@
-﻿using BlogPetNews.API.Domain.Enuem;
-using BlogPetNews.API.Domain.Util;
+﻿using BlogPetNews.API.Domain.Enums;
+using BlogPetNews.API.Domain.Utils;
 
 namespace BlogPetNews.API.Domain.Users
 {

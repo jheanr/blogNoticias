@@ -1,9 +1,4 @@
-using BlogPetNews.API.Domain.Enuem;
-using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
-using BlogPetNews.API.Infra.News;
-using BlogPetNews.API.Infra.Users;
-using BlogPetNews.API.Infra.Utils;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

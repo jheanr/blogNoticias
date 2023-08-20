@@ -1,4 +1,4 @@
-﻿namespace BlogPetNews.API.Domain.Util
+﻿namespace BlogPetNews.API.Domain.Utils
 {
     public class ClassBase
     {

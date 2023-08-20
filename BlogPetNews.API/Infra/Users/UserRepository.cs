@@ -1,7 +1,6 @@
 ﻿using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BlogPetNews.API.Infra.Users
 {
