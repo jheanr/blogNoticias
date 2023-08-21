@@ -1,19 +1,16 @@
-﻿using BlogPetNews.API.Domain.Users;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BlogPetNews.API.Infra.News
 {
-    public class NewsEntityConfiguration
+    public class NewsEntityConfiguration : IEntityTypeConfiguration<Domain.News.News>
     {
-
-        public NewsEntityConfiguration(EntityTypeBuilder<Domain.News.News> entityBuilder)
+        public void Configure(EntityTypeBuilder<Domain.News.News> builder)
         {
-            entityBuilder.HasKey(prop => prop.Id);
-
-            entityBuilder.Property(prop => prop.Title).IsRequired().HasMaxLength(100);
-            entityBuilder.Property(prop => prop.Content).IsRequired();
-            entityBuilder.Property(e => e.UserId);
-
+            builder.HasKey(prop => prop.Id);
+            builder.Property(prop => prop.Title).IsRequired().HasMaxLength(100);
+            builder.Property(prop => prop.Content).IsRequired();
+            builder.Property(e => e.UserId);
         }
     }
 }
