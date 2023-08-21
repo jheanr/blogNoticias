@@ -1,22 +1,25 @@
 ﻿using BlogPetNews.API.Domain.Users;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BlogPetNews.API.Infra.Users
 {
-    public class UserEntityConfiguration
+    public class UserEntityConfiguration : IEntityTypeConfiguration<User>
     {
-        public UserEntityConfiguration(EntityTypeBuilder<User> entityBuilder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            entityBuilder.HasKey(prop => prop.Id);
+            builder.HasKey(prop => prop.Id);
 
-            entityBuilder.HasIndex(prop => prop.Email).IsUnique();
-            entityBuilder.Property(prop => prop.Name).IsRequired().HasMaxLength(200);
-            entityBuilder.Property(prop => prop.Password).IsRequired();
-            entityBuilder.Property(prop => prop.Role).IsRequired();
+            builder.HasIndex(prop => prop.Email).IsUnique();
+            builder.Property(prop => prop.Name).IsRequired().HasMaxLength(200);
+            builder.Property(prop => prop.Password).IsRequired();
+            builder.Property(prop => prop.Role).IsRequired();
 
-            entityBuilder.HasMany(prop => prop.News).WithOne(prop => prop.User).HasForeignKey(prop => prop.UserId).HasPrincipalKey(prop => prop.Id);
-
-
+            builder.HasMany(prop => prop.News)
+                .WithOne(prop => prop.User)
+                .HasForeignKey(prop => prop.UserId)
+                .HasPrincipalKey(prop => prop.Id);
         }
     }
 }

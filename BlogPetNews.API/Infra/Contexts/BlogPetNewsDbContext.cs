@@ -15,11 +15,10 @@ namespace BlogPetNews.API.Infra.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
        {
+            modelBuilder.ApplyConfiguration(new NewsEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+
             base.OnModelCreating(modelBuilder);
-
-            new NewsEntityConfiguration(modelBuilder.Entity<Domain.News.News>());
-            new UserEntityConfiguration(modelBuilder.Entity<Domain.Users.User>());
        }
-
     }
 }
