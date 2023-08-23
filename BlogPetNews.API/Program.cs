@@ -1,9 +1,12 @@
 using BlogPetNews.API.Domain.News;
+using BlogPetNews.API.Domain.UseCases.CreateUser;
+using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.News;
 using BlogPetNews.API.Infra.Users;
-
+using BlogPetNews.API.Infra.Utils;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,9 +20,10 @@ builder.Services.AddDbContext<BlogPetNewsDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient<BlogPetNewsDbContext>();
-
+builder.Services.AddTransient<TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
+builder.Services.AddMediatR(typeof(Program));
 
 var app = builder.Build();
 
@@ -59,5 +63,19 @@ app.MapGet("/news", () =>
 })
 .WithName("GetNews")
 .WithOpenApi();
+
+app.MapPost("/login", (IMediator mediator,string email, string password) =>
+{
+    var loginCommand = new LoginUserCommand { Email = email, Password = password };
+    var login = mediator.Send(loginCommand);
+    return login;
+}).AllowAnonymous();
+
+app.MapPost("/create", (IMediator mediator, User user) =>
+{
+    var createCommand = new CreateUserCommand { user = user };
+    var created = mediator.Send(createCommand);
+    return created;
+}).AllowAnonymous();
 
 app.Run();
