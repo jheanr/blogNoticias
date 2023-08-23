@@ -2,7 +2,7 @@
 {
     public interface INewsRepository
     {
-        IEnumerable<News> GetAll(string? search, int page, int take);
+        IEnumerable<News> GetAll();
         News GetById(Guid id);
         News Create(News news);
         News Update(News news);
