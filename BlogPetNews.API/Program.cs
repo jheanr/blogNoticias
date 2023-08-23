@@ -1,5 +1,8 @@
 using BlogPetNews.API.Extensions;
 using BlogPetNews.API.Presentation.News;
+using BlogPetNews.API.Infra.Utils;
+using MediatR;
+using BlogPetNews.API.Presentation.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,18 +11,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbServices(builder.Configuration);
+builder.Services.AddTransient<TokenService>();
+builder.Services.AddMediatR(typeof(Program));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.ApplyMigrations();
 app.UseHttpsRedirection();
+
+// Endpoints
 app.AddNewsEndpoints();
+app.AddUserEndpoints();
 
 app.Run();
