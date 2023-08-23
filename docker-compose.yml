@@ -11,13 +11,14 @@ services:
             - "8080:80"
         networks:
             - blogpets-network
-        
+        depends_on:
+            - petnewsdb
 
     petnewsdb:
         image: postgres
         restart: always
         environment:
-            POSTGRES_PASSWORD: "bl0gP3tNews@3125!"
+            POSTGRES_PASSWORD: ""
         ports:
             - "5432:5432"
         networks:
