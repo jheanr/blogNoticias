@@ -1,5 +1,6 @@
 ﻿using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Utils;
+
 using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.LoginUser
@@ -18,18 +19,18 @@ namespace BlogPetNews.API.Domain.UseCases.LoginUser
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
             var token = Login(request.Email, request.Password);
-            return new LoginUserCommandResponse { Token = token, Success = true};
+            return new LoginUserCommandResponse { Token = token, Success = true };
         }
 
         private string Login(string email, string password)
         {
-            var user =  _userService.Login(email, password);
-            if(user is not null)
+            var user = _userService.Login(email, password);
+            if (user is not null)
             {
-                var token =  _tokenService.GenerateToken(user);
+                var token = _tokenService.GenerateToken(user);
                 return token;
             }
-            return "Erro";
+            return "Unauthorized Access";
         }
     }
 }

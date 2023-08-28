@@ -1,6 +1,6 @@
 ﻿namespace BlogPetNews.API.Infra.Utils
 {
-    public class Cryptography: ICryptography
+    public class Cryptography : ICryptography
     {
         public Cryptography()
         {
@@ -14,7 +14,7 @@
 
         public bool Compares(string password, string hash)
         {
-            if (BCrypt.Net.BCrypt.Verify(password, hash) == true) 
+            if (BCrypt.Net.BCrypt.Verify(password, hash) == true)
                 return true;
             return false;
         }

@@ -7,6 +7,6 @@
         User Create(User user);
         User Update(User user);
         void Delete(Guid id);
-        User? Login(string email, string password);
+        User Login(string email, string password);
     }
 }

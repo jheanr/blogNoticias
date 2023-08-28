@@ -1,8 +1,9 @@
 using BlogPetNews.API.Extensions;
-using BlogPetNews.API.Presentation.News;
 using BlogPetNews.API.Infra.Utils;
-using MediatR;
+using BlogPetNews.API.Presentation.News;
 using BlogPetNews.API.Presentation.Users;
+
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.ApplyMigrations();

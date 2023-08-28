@@ -1,5 +1,4 @@
-﻿using BlogPetNews.API.Domain.Users;
-using MediatR;
+﻿using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.LoginUser
 {

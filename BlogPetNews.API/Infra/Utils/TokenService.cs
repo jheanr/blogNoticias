@@ -1,12 +1,14 @@
 ﻿using BlogPetNews.API.Domain.Users;
+
 using Microsoft.IdentityModel.Tokens;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace BlogPetNews.API.Infra.Utils
 {
-    public  class TokenService
+    public class TokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -31,9 +33,8 @@ namespace BlogPetNews.API.Infra.Utils
                 Expires = DateTime.UtcNow.AddHours(2),
 
                 SigningCredentials = new SigningCredentials(
-                                       new SymmetricSecurityKey(key),
-                                                          SecurityAlgorithms.HmacSha256Signature
-                                                                         )
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

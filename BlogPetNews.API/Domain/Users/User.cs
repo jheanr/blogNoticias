@@ -9,10 +9,9 @@ namespace BlogPetNews.API.Domain.Users
         public string Email { get; set; }
         public string Password { get; set; }
         public RolesUser Role { get; set; }
+        public virtual ICollection<News.News> News { get; set; }
 
-        public virtual ICollection<News.News> News {get; set; }
-
-        public User(string name, string email, string password, RolesUser role): base()
+        public User(string name, string email, string password, RolesUser role) : base()
         {
             Name = name;
             Email = email;

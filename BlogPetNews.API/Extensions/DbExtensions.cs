@@ -3,6 +3,7 @@ using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.News;
 using BlogPetNews.API.Infra.Users;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogPetNews.API.Extensions
@@ -11,8 +12,9 @@ namespace BlogPetNews.API.Extensions
     {
         public static void AddDbServices(this IServiceCollection services, IConfiguration configuration)
         {
-            
-            services.AddDbContext<BlogPetNewsDbContext>(options => {
+
+            services.AddDbContext<BlogPetNewsDbContext>(options =>
+            {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
