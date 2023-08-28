@@ -6,7 +6,7 @@ namespace BlogPetNews.API.Infra.News
 {
     public class NewsRepository : BaseRepository<Domain.News.News>, INewsRepository
     {
-       
+
         public NewsRepository(BlogPetNewsDbContext context) : base(context)
         {
         }
@@ -21,22 +21,19 @@ namespace BlogPetNews.API.Infra.News
 
         public void Delete(Guid id)
         {
-             Domain.News.News news = GetById(id);
+            Domain.News.News news = GetById(id);
             _context.Remove(news);
             _context.SaveChanges();
         }
 
-        public IEnumerable<Domain.News.News> GetAll(string? search, int page = 1, int take = 10)
+        public IEnumerable<Domain.News.News> GetAll()
         {
-            int skip = (page - 1) * take;
-
-            return _dbSet.Where(news => news.Title.Contains(search ?? "")).Skip(skip).Take(take).ToList();
-
+            return _dbSet.ToList();
         }
 
         public Domain.News.News GetById(Guid id)
         {
-          return _dbSet.Where(news => news.Id == id).First();
+            return _dbSet.Where(news => news.Id.Equals(id)).FirstOrDefault();
         }
 
         public Domain.News.News Update(Domain.News.News news)
