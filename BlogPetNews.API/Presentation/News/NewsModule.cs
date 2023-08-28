@@ -33,6 +33,8 @@ public static class NewsModule
             news.Title = updatedNews.Title;
             news.Content = updatedNews.Content;
 
+            newsRepository.Update(news);
+
             return Results.Ok(news);
         });
 
