@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BlogPetNews.API.Infra.Utils
 {
-    public  class TokenService
+    public class TokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -24,16 +24,14 @@ namespace BlogPetNews.API.Infra.Utils
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Email.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(2),
 
                 SigningCredentials = new SigningCredentials(
-                                       new SymmetricSecurityKey(key),
-                                                          SecurityAlgorithms.HmacSha256Signature
-                                                                         )
+                    new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -1,4 +1,8 @@
 ﻿using BlogPetNews.API.Domain.News;
+using BlogPetNews.API.Domain.UseCases.CreateNews;
+using BlogPetNews.API.Domain.UseCases.GetNews;
+using MediatR;
+using System.Security.Claims;
 
 namespace BlogPetNews.API.Presentation.News;
 
@@ -6,7 +10,13 @@ public static class NewsModule
 {
     public static void AddNewsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/news", (INewsRepository newsRepository) => newsRepository.GetAll());
+        app.MapGet("/news", (IMediator mediator) =>
+        {
+            var query = new GetAllNewsQuery();
+            var result = mediator.Send(query);
+
+            return result;
+        }).RequireAuthorization();
 
         app.MapGet("/news/{id}", (INewsRepository newsRepository, Guid id) =>
         {
@@ -14,14 +24,21 @@ public static class NewsModule
 
             return news is Domain.News.News result
                 ? Results.Ok(result) : Results.NotFound("News not found.");
-        });
+        }).RequireAuthorization();
 
-        app.MapPost("/news", (INewsRepository newsRepository, Domain.News.News news) =>
+        app.MapPost("/news", (IMediator mediator, CreateNewsCommand command, ClaimsPrincipal user) =>
         {
-            var result = newsRepository.Create(news);
+            var createNewsCommand = new CreateNewsCommand
+            {
+                Title = command.Title,
+                Content = command.Content,
+                UserId = command.UserId
+            };
+
+            var result = mediator.Send(createNewsCommand);
 
             return Results.Ok(result);
-        });
+        }).RequireAuthorization();
 
         app.MapPut("/news/{id}", (INewsRepository newsRepository, Domain.News.News updatedNews, Guid id) =>
         {
@@ -34,7 +51,7 @@ public static class NewsModule
             news.Content = updatedNews.Content;
 
             return Results.Ok(news);
-        });
+        }).RequireAuthorization();
 
         app.MapDelete("/news/{id}", async (INewsRepository newsRepository, Guid id) =>
         {
@@ -46,6 +63,6 @@ public static class NewsModule
             newsRepository.Delete(id);
 
             return Results.Ok("News successfully removed.");
-        });
+        }).RequireAuthorization("Admin");
     }
 }

@@ -29,7 +29,7 @@ namespace BlogPetNews.API.Domain.UseCases.LoginUser
                 var token =  _tokenService.GenerateToken(user);
                 return token;
             }
-            return "Erro";
+            return "Invalid email or password.";
         }
     }
 }
