@@ -15,6 +15,7 @@ namespace BlogPetNews.API.Domain.UseCases.CreateUser
             _userService = userService;
             _tokenService = tokenService;
         }
+
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var user = Create(request.User);

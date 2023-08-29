@@ -16,7 +16,7 @@ public static class NewsModule
             var result = mediator.Send(query);
 
             return result;
-        }).RequireAuthorization();
+        }).AllowAnonymous();
 
         app.MapGet("/news/{id}", (INewsRepository newsRepository, Guid id) =>
         {
@@ -24,7 +24,7 @@ public static class NewsModule
 
             return news is Domain.News.News result
                 ? Results.Ok(result) : Results.NotFound("News not found.");
-        }).RequireAuthorization();
+        }).AllowAnonymous();
 
         app.MapPost("/news", (IMediator mediator, CreateNewsCommand command, ClaimsPrincipal user) =>
         {
@@ -32,7 +32,7 @@ public static class NewsModule
             {
                 Title = command.Title,
                 Content = command.Content,
-                UserId = command.UserId
+                UserEmail = user.FindFirstValue(ClaimTypes.Email)
             };
 
             var result = mediator.Send(createNewsCommand);
