@@ -1,5 +1,6 @@
 ﻿using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Utils;
+
 using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.CreateUser
@@ -16,15 +17,11 @@ namespace BlogPetNews.API.Domain.UseCases.CreateUser
         }
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = Create(request.user);
+            var user = Create(request.User);
             if (user is not null)
-            {
                 return new CreateUserCommandResponse { Success = true, User = user };
-            }
             else
                 return new CreateUserCommandResponse { Success = false, User = null };
-
-
         }
 
         private User Create(User user)
@@ -34,8 +31,6 @@ namespace BlogPetNews.API.Domain.UseCases.CreateUser
                 return newUser;
             else
                 return null;
-
-
         }
     }
 }

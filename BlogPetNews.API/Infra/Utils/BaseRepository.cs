@@ -1,5 +1,6 @@
 ﻿using BlogPetNews.API.Domain.Utils;
 using BlogPetNews.API.Infra.Contexts;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogPetNews.API.Infra.Utils
@@ -14,6 +15,5 @@ namespace BlogPetNews.API.Infra.Utils
             _context = context;
             _dbSet = _context.Set<T>();
         }
-     
     }
 }

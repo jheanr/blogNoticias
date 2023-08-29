@@ -40,21 +40,22 @@ namespace BlogPetNews.API.Infra.Users
             return _dbSet.Where(news => news.Id == id).First();
         }
 
-        public User? Login(string email, string password)
+        public User Login(string email, string password)
         {
-           var user = _dbSet.Where(user => user.Email == email).FirstOrDefault();
+            var user = _dbSet.Where(user => user.Email == email).FirstOrDefault();
 
             if (user == null)
             {
                 return null;
-
-            } else
+            }
+            else
             {
-                if(_Cryptography.Compares(password, user.Password))
+                if (_Cryptography.Compares(password, user.Password))
                 {
                     return user;
 
-                } else
+                }
+                else
                 {
                     return null;
                 }

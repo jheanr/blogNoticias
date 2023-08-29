@@ -4,8 +4,5 @@
     {
         public string Encodes(string password);
         public bool Compares(string password, string hash);
-
-
-
     }
 }

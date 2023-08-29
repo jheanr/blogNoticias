@@ -1,10 +1,11 @@
 using BlogPetNews.API.Extensions;
-using BlogPetNews.API.Presentation.News;
 using BlogPetNews.API.Infra.Utils;
-using MediatR;
+using BlogPetNews.API.Presentation.News;
 using BlogPetNews.API.Presentation.Users;
 using Microsoft.OpenApi.Models;
 using System.Text;
+
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
