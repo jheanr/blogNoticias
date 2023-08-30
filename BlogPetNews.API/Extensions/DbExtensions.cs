@@ -29,7 +29,6 @@ namespace BlogPetNews.API.Extensions
                 try
                 {
                     var context = services.GetRequiredService<BlogPetNewsDbContext>();
-                    context.Database.EnsureCreated();
                     context.Database.Migrate();
                 }
                 catch (Exception ex)
