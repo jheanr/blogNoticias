@@ -29,6 +29,21 @@ A implantação da aplicação é automatizada usando o Azure DevOps para CI/CD.
 - O Azure Container Registry (ACR) é usado para armazenar as imagens de contêiner.
 - O Azure Container Instances (ACI) é usado para implantar os contêineres.
 
+## Testando o projeto
+
+Deixamos disponíveis dois usuários com _roles_ distintas para teste, sendo:
+**Role**: Admin
+- login: admin@admin.com
+- senha: pass123
+
+**Role**: User
+- login: admin@admin.com
+- senha: pass123
+
+> Há possibilidade de criar outros usuários conforme necessidade através do endpoint disponibilizado.
+
+Para a remoção de uma notícia, é obrigatório a _role_ de **admin** para executar a operação.
+
 ## Conclusão
 
 Este projeto de blog de notícias com autenticação e implantação no Azure DevOps demonstra a integração da estrutura DDD, autenticação JWT e a automação de CI/CD usando o Azure DevOps.
