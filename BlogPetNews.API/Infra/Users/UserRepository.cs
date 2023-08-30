@@ -35,6 +35,11 @@ namespace BlogPetNews.API.Infra.Users
             return _dbSet.Skip(skip).Take(take).ToList();
         }
 
+        public User GetByEmail(string email)
+        {
+            return _dbSet.Where(news => news.Email.Equals(email)).First();
+        }
+
         public User GetById(Guid id)
         {
             return _dbSet.Where(news => news.Id == id).First();

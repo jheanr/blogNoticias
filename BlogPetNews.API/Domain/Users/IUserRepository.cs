@@ -4,6 +4,7 @@
     {
         IEnumerable<User> GetAll(int page, int take);
         User GetById(Guid id);
+        User GetByEmail(string email);
         User Create(User user);
         User Update(User user);
         void Delete(Guid id);

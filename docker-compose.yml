@@ -5,8 +5,6 @@ services:
         build: ./BlogPetNews.API
         image: rm348780.azurecr.io/techchallenge/blogpetnews
         container_name: blogpetnews
-        # environment:
-        #     - DefaultConnection=
         ports:
             - "8080:80"
         networks:
@@ -16,9 +14,11 @@ services:
 
     petnewsdb:
         image: postgres
+        container_name: blogpetnewsdb
         restart: always
         environment:
-            POSTGRES_PASSWORD: ""
+            POSTGRES_USER: blogpetnews
+            POSTGRES_PASSWORD: "yLDLla@23X!lyDz"
         ports:
             - "5432:5432"
         networks:
