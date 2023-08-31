@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using BlogPetNews.API.Service.ViewModels.News;
+using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.CreateNews;
 
 public class CreateNewsCommand : IRequest<CreateNewsCommandResponse>
 {
-    public string Title { get; set; }
-    public string Content { get; set; }
-    public string UserEmail { get; set; }
+  public  CreateNewsDto CreateNewsDto { get; set; }
+  public string UserEmail { get; set; }
 }

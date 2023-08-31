@@ -1,22 +1,22 @@
-﻿using BlogPetNews.API.Domain.News;
+﻿using BlogPetNews.API.Service.News;
 using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.GetNews;
 
 public class GetAllNewsQueryHandler : IRequestHandler<GetAllNewsQuery, GetAllNewsQueryResponse>
 {
-    private readonly INewsRepository _newsRepository;
+    private readonly INewsService _newsService;
 
-    public GetAllNewsQueryHandler(INewsRepository newsRepository)
+    public GetAllNewsQueryHandler(INewsService newsService)
     {
-        _newsRepository = newsRepository;
+        _newsService = newsService;
     }
 
     public async Task<GetAllNewsQueryResponse> Handle(GetAllNewsQuery request, CancellationToken cancellationToken)
     {
         var news = new GetAllNewsQueryResponse
         {
-            News = _newsRepository.GetAll()
+            News = _newsService.GetAll()
         };
 
         return news;

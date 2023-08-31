@@ -1,13 +1,14 @@
-﻿using BlogPetNews.API.Domain.News;
+﻿using AutoMapper;
+using BlogPetNews.API.Domain.News;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogPetNews.API.Infra.News
 {
     public class NewsRepository : BaseRepository<Domain.News.News>, INewsRepository
     {
-
-        public NewsRepository(BlogPetNewsDbContext context) : base(context)
+        public NewsRepository(BlogPetNewsDbContext context, IMapper map) : base(context)
         {
         }
 
@@ -28,18 +29,19 @@ namespace BlogPetNews.API.Infra.News
 
         public IEnumerable<Domain.News.News> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet.Include(news => news.User).ToList();
         }
 
         public Domain.News.News GetById(Guid id)
         {
-            return _dbSet.Where(news => news.Id.Equals(id)).FirstOrDefault();
+            return _dbSet.Where(news => news.Id.Equals(id)).Include(x => x.User).FirstOrDefault();
         }
 
         public Domain.News.News Update(Domain.News.News news)
         {
             _context.Update(news);
             _context.SaveChanges();
+
             return news;
         }
     }

@@ -1,32 +1,29 @@
-﻿using BlogPetNews.API.Domain.News;
-using BlogPetNews.API.Domain.Users;
+﻿using BlogPetNews.API.Service.News;
+using BlogPetNews.API.Service.Users;
 using MediatR;
+
 
 namespace BlogPetNews.API.Domain.UseCases.CreateNews;
 
 public class CreateNewsCommandHandler : IRequestHandler<CreateNewsCommand, CreateNewsCommandResponse>
 {
-    private readonly INewsRepository _newsRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly INewsService _newsService;
+    private readonly IUserService _userService;
 
-    public CreateNewsCommandHandler(INewsRepository newsRepository, IUserRepository userRepository)
+    public CreateNewsCommandHandler(INewsService newsService, IUserService userService)
     {
-        _newsRepository = newsRepository;
-        _userRepository = userRepository;
+        _newsService = newsService;
+        _userService = userService;
     }
 
     public async Task<CreateNewsCommandResponse> Handle(CreateNewsCommand request, CancellationToken cancellationToken)
     {
-        var user = _userRepository.GetByEmail(request.UserEmail);
+      
 
-        var news = new News.News()
-        {
-            Title = request.Title,
-            Content = request.Content,
-            UserId = user.Id
-        };
+        var user = _userService.GetByEmail(request.UserEmail);
 
-        var addedNews = _newsRepository.Create(news);
+        var addedNews = _newsService.Create(request.CreateNewsDto, user.Id);
+
         if (addedNews != null)
         {
             return new CreateNewsCommandResponse { News = addedNews, Success = true };

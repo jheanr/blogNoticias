@@ -1,7 +1,9 @@
-﻿namespace BlogPetNews.API.Domain.UseCases.CreateNews;
+﻿using BlogPetNews.API.Service.ViewModels.News;
+
+namespace BlogPetNews.API.Domain.UseCases.CreateNews;
 
 public class CreateNewsCommandResponse
 {
-    public News.News News { get; set; }
+    public ReadNewsDto News { get; set; }
     public bool Success { get; set; }
 }

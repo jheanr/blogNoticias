@@ -1,19 +1,19 @@
 ﻿using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Utils;
-
+using BlogPetNews.API.Service.News;
+using BlogPetNews.API.Service.Users;
+using BlogPetNews.API.Service.ViewModels.Users;
 using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CreateUserCommandResponse>
     {
-        private readonly IUserRepository _userService;
-        private readonly TokenService _tokenService;
+        private readonly IUserService _userService;
 
-        public CreateUserCommandHandler(IUserRepository userService, TokenService tokenService)
+        public CreateUserCommandHandler(IUserService userService, TokenService tokenService)
         {
             _userService = userService;
-            _tokenService = tokenService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace BlogPetNews.API.Domain.UseCases.CreateUser
                 return new CreateUserCommandResponse { Success = false, User = null };
         }
 
-        private User Create(User user)
+        private ReadUserDto Create(CreateUserDto user)
         {
             var newUser = _userService.Create(user);
             if (newUser is not null)
