@@ -3,6 +3,6 @@
     public class ClassBase
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime DateCreated { get; set; } = DateTime.Now;
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }

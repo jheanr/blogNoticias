@@ -3,8 +3,13 @@ using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.News;
 using BlogPetNews.API.Infra.Users;
-
+using BlogPetNews.API.Service.News;
+using BlogPetNews.API.Service.Users;
+using BlogPetNews.API.Service.ViewModels.News;
+using BlogPetNews.API.Service.ViewModels.Users;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BlogPetNews.API.Extensions
 {
@@ -19,6 +24,7 @@ namespace BlogPetNews.API.Extensions
             });
 
             AddRepositories(services);
+            AddServices(services);
         }
 
         public static IApplicationBuilder ApplyMigrations(this IApplicationBuilder app)
@@ -46,5 +52,21 @@ namespace BlogPetNews.API.Extensions
             services.AddScoped<INewsRepository, NewsRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<IValidator<CreateUserDto>, CreateUserDto.CreateUserDtoValidator>();
+            services.AddScoped<IValidator<CreateNewsDto>, CreateNewsDto.CreateNewsDtoValidator>();
+            services.AddScoped<IValidator<UpdateUserDto>, UpdateUserDto.UpdateUserDtoValidator>();
+            services.AddScoped<IValidator<UpdateNewsDto>, UpdateNewsDto.UpdateNewsDtoValidator>();
+
+
+        }
+   
     }
 }
