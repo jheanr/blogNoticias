@@ -37,7 +37,7 @@ Deixamos disponíveis dois usuários com _roles_ distintas para teste, sendo:
 - senha: pass123
 
 **Role**: User
-- login: admin@admin.com
+- login: user@user.com
 - senha: pass123
 
 > Há possibilidade de criar outros usuários conforme necessidade através do endpoint disponibilizado.
@@ -48,4 +48,4 @@ Para a remoção de uma notícia, é obrigatório a _role_ de **admin** para exe
 
 Este projeto de blog de notícias com autenticação e implantação no Azure DevOps demonstra a integração da estrutura DDD, autenticação JWT e a automação de CI/CD usando o Azure DevOps.
 
-> Implementado por: Daniela Miranda de Almeida, Jhean Ricardo Ramos, Lucas dos anjos Varela, Marcelo de Moraes Andrade e Wellington Chida de Oliveira.
+> Implementado por: [Daniela Miranda de Almeida](https://github.com/danimiran), [Jhean Ricardo Ramos](https://github.com/jheanr), [Lucas dos anjos Varela](https://github.com/LucasVarela42), [Marcelo de Moraes Andrade](https://github.com/MM-Andrade) e [Wellington Chida de Oliveira](https://github.com/WellingtonChidaOliveira).
