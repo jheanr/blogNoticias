@@ -1,30 +1,34 @@
-version: '3'
+version: '3.4'
 
 services:
-    blogpetnews:
-        build: ./BlogPetNews.API
-        image: rm348780.azurecr.io/techchallenge/blogpetnews
-        container_name: blogpetnews
-        ports:
-            - "8080:80"
-        networks:
-            - blogpets-network
-        depends_on:
-            - petnewsdb
-
-    petnewsdb:
-        image: postgres
-        container_name: blogpetnewsdb
-        restart: always
-        environment:
-            POSTGRES_USER: blogpetnews
-            POSTGRES_PASSWORD: "yLDLla@23X!lyDz"
-        ports:
-            - "5432:5432"
-        networks:
-            - blogpets-network
+  petnewsdb:
+    container_name: petnewsdb
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - "1433:1433"
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=yLDLla@23X!lyDz
+    networks:
+        - blogpetnews
+  blogpetnews.api:
+    container_name: blogpetnews.api
+    image: ${DOCKER_REGISTRY-}blogpetnewsapi
+    build:
+      context: .
+      dockerfile: BlogPetNews.API/Dockerfile
+    ports:
+       - "5000:80"
+    depends_on:
+     - petnewsdb
+    environment:
+    - DB_HOST=petnewsdb
+    - DB_NAME=BlogNewsDB
+    - DB_SA_PASSWORD=yLDLla@23X!lyDz
+    networks:
+     - blogpetnews
 
 networks:
-    blogpets-network:
-        driver: bridge    
-
+  blogpetnews:
+    name: blogpetnews
+    
