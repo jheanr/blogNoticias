@@ -1,9 +1,21 @@
 version: '3'
 
 services:
+    petnewsdb:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        container_name: blogpetnewsdb
+        environment:
+            SA_PASSWORD: "rAbt2RVFWDHtA8f"
+            ACCEPT_EULA: "Y"
+            MSSQL_PID: "Developer"
+        ports:
+            - "1433:1433"
+        networks:
+            - blogpets-network
+
     blogpetnews:
         build: ./BlogPetNews.API
-        image: rm348780.azurecr.io/techchallenge/blogpetnews
+        image: rm348780acr.azurecr.io/techchallenge/blogpetnews
         container_name: blogpetnews
         ports:
             - "8080:80"
@@ -12,19 +24,6 @@ services:
         depends_on:
             - petnewsdb
 
-    petnewsdb:
-        image: postgres
-        container_name: blogpetnewsdb
-        restart: always
-        environment:
-            POSTGRES_USER: blogpetnews
-            POSTGRES_PASSWORD: "yLDLla@23X!lyDz"
-        ports:
-            - "5432:5432"
-        networks:
-            - blogpets-network
-
 networks:
     blogpets-network:
-        driver: bridge    
-
+        driver: bridge
