@@ -1,4 +1,5 @@
-﻿using BlogPetNews.API.Domain.Users;
+﻿using BlogPetNews.API.Domain.News;
+using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
 
@@ -35,9 +36,14 @@ namespace BlogPetNews.API.Infra.Users
             return _dbSet.Skip(skip).Take(take).ToList();
         }
 
+        public User GetByEmail(string email)
+        {
+            return _dbSet.Where(news => news.Email.Equals(email)).FirstOrDefault();
+        }
+
         public User GetById(Guid id)
         {
-            return _dbSet.Where(news => news.Id == id).First();
+            return _dbSet.Where(news => news.Id == id).FirstOrDefault();
         }
 
         public User Login(string email, string password)

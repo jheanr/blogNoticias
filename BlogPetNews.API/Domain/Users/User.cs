@@ -11,6 +11,8 @@ namespace BlogPetNews.API.Domain.Users
         public RolesUser Role { get; set; }
         public virtual ICollection<News.News> News { get; set; }
 
+        public User() { }
+
         public User(string name, string email, string password, RolesUser role) : base()
         {
             Name = name;

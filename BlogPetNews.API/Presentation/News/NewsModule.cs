@@ -1,4 +1,11 @@
-﻿using BlogPetNews.API.Domain.News;
+﻿using BlogPetNews.API.Domain.UseCases.CreateNews;
+using BlogPetNews.API.Domain.UseCases.GetNews;
+using BlogPetNews.API.Domain.UseCases.UpdateNews;
+using BlogPetNews.API.Service.News;
+using BlogPetNews.API.Service.ViewModels.News;
+using FluentValidation;
+using MediatR;
+using System.Security.Claims;
 
 namespace BlogPetNews.API.Presentation.News;
 
@@ -6,48 +13,65 @@ public static class NewsModule
 {
     public static void AddNewsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/news", (INewsRepository newsRepository) => newsRepository.GetAll());
-
-        app.MapGet("/news/{id}", (INewsRepository newsRepository, Guid id) =>
+        app.MapGet("/news", (IMediator mediator) =>
         {
-            var news = newsRepository.GetById(id);
+            var query = new GetAllNewsQuery();
+            var result = mediator.Send(query);
 
-            return news is Domain.News.News result
-                ? Results.Ok(result) : Results.NotFound("News not found.");
-        });
+            return result;
+        }).AllowAnonymous();
 
-        app.MapPost("/news", (INewsRepository newsRepository, Domain.News.News news) =>
+        app.MapGet("/news/{id}", (INewsService newsService, Guid id) =>
         {
-            var result = newsRepository.Create(news);
+            var news = newsService.GetById(id);
+
+            return news is not null
+                ? Results.Ok(news) : Results.NotFound("News not found.");
+
+        }).AllowAnonymous();
+
+        app.MapPost("/news", async (IMediator mediator, IValidator<CreateNewsDto> validator, CreateNewsDto newsDto, ClaimsPrincipal user) =>
+        {
+            var validationResult = await validator.ValidateAsync(newsDto);
+            if (!validationResult.IsValid)
+            {
+                return Results.ValidationProblem(validationResult.ToDictionary());
+            }
+
+            var createNewsCommand = new CreateNewsCommand
+            {
+                CreateNewsDto = newsDto,
+                UserEmail = user.FindFirstValue(ClaimTypes.Email)
+            };
+
+            var result = mediator.Send(createNewsCommand);
 
             return Results.Ok(result);
-        });
+        }).RequireAuthorization();
 
-        app.MapPut("/news/{id}", (INewsRepository newsRepository, Domain.News.News updatedNews, Guid id) =>
+        app.MapPut("/news/{id}", (IMediator mediator, INewsService newsService, UpdateNewsDto updatedNews, Guid id) =>
         {
-            var news = newsRepository.GetById(id);
+
+            var UpdateCommand = new UpdateNewsCommand { UpdateNewsDto = updatedNews, Id = id };
+            var update = mediator.Send(UpdateCommand);
+
+            if (update is null)
+                return Results.NotFound("News not found.");
+
+            return Results.Ok(update);
+
+        }).RequireAuthorization();
+
+        app.MapDelete("/news/{id}", (INewsService newsService, Guid id) =>
+        {
+            var news = newsService.GetById(id);
 
             if (news is null)
                 return Results.NotFound("News not found.");
 
-            news.Title = updatedNews.Title;
-            news.Content = updatedNews.Content;
-
-            newsRepository.Update(news);
-
-            return Results.Ok(news);
-        });
-
-        app.MapDelete("/news/{id}", async (INewsRepository newsRepository, Guid id) =>
-        {
-            var news = newsRepository.GetById(id);
-
-            if (news is null)
-                return Results.NotFound("News not found.");
-
-            newsRepository.Delete(id);
+            newsService.Delete(id);
 
             return Results.Ok("News successfully removed.");
-        });
+        }).RequireAuthorization("Admin");
     }
 }

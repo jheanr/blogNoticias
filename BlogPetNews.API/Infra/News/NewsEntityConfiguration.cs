@@ -10,7 +10,7 @@ namespace BlogPetNews.API.Infra.News
             builder.HasKey(prop => prop.Id);
             builder.Property(prop => prop.Title).IsRequired().HasMaxLength(100);
             builder.Property(prop => prop.Content).IsRequired();
-            builder.Property(e => e.UserId);
+            builder.Property(prop => prop.UserId);
         }
     }
 }

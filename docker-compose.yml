@@ -17,8 +17,6 @@ services:
         build: ./BlogPetNews.API
         image: rm348780acr.azurecr.io/techchallenge/blogpetnews
         container_name: blogpetnews
-        environment:
-            ConnectionString:DefaultConnection: "Server=petnews.database.windows.net;Database=blogpetnews;User Id=petnews;Password=7mxdWuSG5S-jz1);TrustServerCertificate=True;"
         ports:
             - "8080:80"
         networks:
@@ -28,5 +26,4 @@ services:
 
 networks:
     blogpets-network:
-        driver: bridge    
-
+        driver: bridge

@@ -1,7 +1,9 @@
 ﻿using BlogPetNews.API.Domain.UseCases.CreateUser;
 using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Domain.Users;
-
+using BlogPetNews.API.Service.ViewModels.News;
+using BlogPetNews.API.Service.ViewModels.Users;
+using FluentValidation;
 using MediatR;
 
 namespace BlogPetNews.API.Presentation.Users;
@@ -17,11 +19,22 @@ public static class UserModule
             return login;
         }).AllowAnonymous();
 
-        app.MapPost("/create", (IMediator mediator, User user) =>
+        app.MapPost("/create", async (IMediator mediator, IValidator<CreateUserDto> validator, CreateUserDto user) =>
         {
+
+            var validationResult = await validator.ValidateAsync(user);
+
+            if (!validationResult.IsValid)
+            {
+                return Results.ValidationProblem(validationResult.ToDictionary());
+            }
+
+
             var createCommand = new CreateUserCommand { User = user };
             var created = mediator.Send(createCommand);
-            return created;
+
+            return Results.Ok(created);
+
         }).AllowAnonymous();
     }
 }
