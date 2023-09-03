@@ -1,13 +1,13 @@
-﻿namespace BlogPetNews.API.Domain.Users
+﻿using BlogPetNews.API.Infra.Utils;
+using Microsoft.EntityFrameworkCore;
+
+namespace BlogPetNews.API.Domain.Users
 {
-    public interface IUserRepository
+    public interface IUserRepository : IBaseRepository<User>
     {
-        IEnumerable<User> GetAll(int page, int take);
-        User GetById(Guid id);
-        User GetByEmail(string email);
-        User Create(User user);
-        User Update(User user);
-        void Delete(Guid id);
-        User Login(string email, string password);
+        Task<User> GetByEmail(string email);
+        Task<User> Login(string email, string password);
+        Task<User> CreateUser(User user);
+       
     }
 }

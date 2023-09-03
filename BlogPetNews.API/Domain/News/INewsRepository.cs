@@ -1,11 +1,10 @@
-﻿namespace BlogPetNews.API.Domain.News
+﻿using BlogPetNews.API.Infra.Utils;
+
+namespace BlogPetNews.API.Domain.News
 {
-    public interface INewsRepository
+    public interface INewsRepository : IBaseRepository<Notice>
     {
-        IEnumerable<News> GetAll();
-        News GetById(Guid id);
-        News Create(News news);
-        News Update(News news);
-        void Delete(Guid id);
+        Task<IEnumerable<Notice>> GetAll();
+
     }
 }

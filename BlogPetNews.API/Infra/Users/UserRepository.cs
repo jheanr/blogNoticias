@@ -2,6 +2,7 @@
 using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogPetNews.API.Infra.Users
 {
@@ -13,42 +14,14 @@ namespace BlogPetNews.API.Infra.Users
             _Cryptography = new Cryptography();
         }
 
-        public User Create(User user)
+        public async Task<User> GetByEmail(string email)
         {
-            user.Password = _Cryptography.Encodes(user.Password);
-            _dbSet.Add(user);
-            _context.SaveChanges();
-
+            var user = await _dbSet.Where(news => news.Email.Equals(email)).FirstOrDefaultAsync();
             return user;
         }
-
-        public void Delete(Guid id)
+        public async Task<User> Login(string email, string password)
         {
-            User user = GetById(id);
-            _context.Remove(user);
-            _context.SaveChanges();
-        }
-
-        public IEnumerable<User> GetAll(int page, int take)
-        {
-            int skip = (page - 1) * take;
-
-            return _dbSet.Skip(skip).Take(take).ToList();
-        }
-
-        public User GetByEmail(string email)
-        {
-            return _dbSet.Where(news => news.Email.Equals(email)).FirstOrDefault();
-        }
-
-        public User GetById(Guid id)
-        {
-            return _dbSet.Where(news => news.Id == id).FirstOrDefault();
-        }
-
-        public User Login(string email, string password)
-        {
-            var user = _dbSet.Where(user => user.Email == email).FirstOrDefault();
+            var user = await GetByEmail(email);
 
             if (user == null)
             {
@@ -68,11 +41,14 @@ namespace BlogPetNews.API.Infra.Users
             }
         }
 
-        public User Update(User user)
+        public async Task<User> CreateUser(User user)
         {
-            _context.Update(user);
-            _context.SaveChanges();
+            user.Password = _Cryptography.Encodes(user.Password);
+            await _context.Users.AddAsync(user);
+            await SaveChanges();
+
             return user;
         }
+
     }
 }

@@ -4,10 +4,10 @@ namespace BlogPetNews.API.Service.News
 {
     public interface INewsService
     {
-        IEnumerable<ReadNewsDto> GetAll();
-        ReadNewsDto GetById(Guid id);
-        ReadNewsDto Create(CreateNewsDto news, Guid userId);
-        ReadNewsDto Update(Guid Id, UpdateNewsDto news);
-        void Delete(Guid id);
+        Task<IEnumerable<ReadNewsDto>> GetAll();
+        Task<ReadNewsDto> GetById(Guid id);
+        Task<ReadNewsDto> Create(CreateNewsDto news, Guid userId);
+        Task<ReadNewsDto> Update(Guid Id, UpdateNewsDto news);
+        Task Delete(Guid id);
     }
 }

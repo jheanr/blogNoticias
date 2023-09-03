@@ -14,9 +14,9 @@ namespace BlogPetNews.API.Service.Users
             _userRepository = userRepository;
         }
 
-        public ReadUserDto Create(CreateUserDto userDto)
+        public async Task<ReadUserDto> Create(CreateUserDto userDto)
         {
-            var user = _userRepository.Create(_mapper.Map<User>(userDto));
+            var user = await _userRepository.Create(_mapper.Map<User>(userDto));
 
             if (user is null)
                 return null;
@@ -24,14 +24,14 @@ namespace BlogPetNews.API.Service.Users
             return _mapper.Map<ReadUserDto>(user);
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-           _userRepository.Delete(id);
+           await _userRepository.Delete(id);
         }
 
-        public IEnumerable<ReadUserDto> GetAll(int page, int take)
+        public async Task<IEnumerable<ReadUserDto>> GetAll(int page, int take)
         {
-            var users = _userRepository.GetAll(page, take);
+            var users = await _userRepository.GetAll(page, take);
 
             if (users is null)
                 return null;
@@ -39,9 +39,9 @@ namespace BlogPetNews.API.Service.Users
             return _mapper.Map<IEnumerable<ReadUserDto>>(users);
         }
 
-        public ReadUserDto GetByEmail(string email)
+        public async Task<ReadUserDto> GetByEmail(string email)
         {
-            var user = _userRepository.GetByEmail(email);
+            var user = await _userRepository.GetByEmail(email);
 
             if (user is null)
                 return null;
@@ -49,9 +49,9 @@ namespace BlogPetNews.API.Service.Users
             return _mapper.Map<ReadUserDto>(user);
         }
 
-        public ReadUserDto GetById(Guid id)
+        public async Task<ReadUserDto> GetById(Guid id)
         {
-            var user = _userRepository.GetById(id);
+            var user = await _userRepository.GetById(id);
 
             if (user is null)
                 return null;
@@ -59,9 +59,9 @@ namespace BlogPetNews.API.Service.Users
             return _mapper.Map<ReadUserDto>(user);
         }
 
-        public ReadUserDto Login(string email, string password)
+        public async Task<ReadUserDto> Login(string email, string password)
         {
-            var user = _userRepository.Login(email, password);
+            var user = await _userRepository.Login(email, password);
 
             if (user is null)
                 return null;
@@ -69,12 +69,12 @@ namespace BlogPetNews.API.Service.Users
             return _mapper.Map<ReadUserDto>(user);
         }
 
-        public ReadUserDto Update(UpdateUserDto userDto, Guid id)
+        public async Task<ReadUserDto> Update(UpdateUserDto userDto, Guid id)
         {
 
-            var UserId = _userRepository.GetById(id);
+            var UserId = await _userRepository.GetById(id);
 
-            var response = _userRepository.Update(_mapper.Map(userDto, UserId));
+            var response = await _userRepository.Update(_mapper.Map(userDto, UserId));
 
             if (response is null)
                 return null;

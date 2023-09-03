@@ -17,7 +17,7 @@ namespace BlogPetNews.API.Domain.UseCases.UpdateNews
         {
 
 
-            var updateNews = _newsService.Update(request.Id, request.UpdateNewsDto);
+            var updateNews = await _newsService.Update(request.Id, request.UpdateNewsDto);
 
             if (updateNews is not null)
             {

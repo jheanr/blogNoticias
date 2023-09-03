@@ -18,16 +18,16 @@ namespace BlogPetNews.API.Domain.UseCases.CreateUser
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = Create(request.User);
+            var user = await Create(request.User);
             if (user is not null)
                 return new CreateUserCommandResponse { Success = true, User = user };
             else
                 return new CreateUserCommandResponse { Success = false, User = null };
         }
 
-        private ReadUserDto Create(CreateUserDto user)
+        private async Task<ReadUserDto> Create(CreateUserDto user)
         {
-            var newUser = _userService.Create(user);
+            var newUser = await _userService.Create(user);
             if (newUser is not null)
                 return newUser;
             else

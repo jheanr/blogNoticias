@@ -3,6 +3,7 @@ using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.News;
 using BlogPetNews.API.Infra.Users;
+using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.API.Service.News;
 using BlogPetNews.API.Service.Users;
 using BlogPetNews.API.Service.ViewModels.News;
@@ -51,6 +52,7 @@ namespace BlogPetNews.API.Extensions
         {
             services.AddScoped<INewsRepository, NewsRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+    
         }
 
         private static void AddServices(IServiceCollection services)

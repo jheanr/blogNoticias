@@ -3,14 +3,14 @@ using BlogPetNews.API.Service.ViewModels.Users;
 
 namespace BlogPetNews.API.Service.Users
 {
-    public interface IUserService
+    public interface IUserService 
     {
-        IEnumerable<ReadUserDto> GetAll(int page, int take);
-        ReadUserDto GetById(Guid id);
-        ReadUserDto GetByEmail(string email);
-        ReadUserDto Create(CreateUserDto user);
-        ReadUserDto Update(UpdateUserDto user, Guid id);
-        void Delete(Guid id);
-        ReadUserDto Login(string email, string password);
+        Task<IEnumerable<ReadUserDto>> GetAll(int page, int take);
+        Task<ReadUserDto> GetById(Guid id);
+        Task<ReadUserDto> GetByEmail(string email);
+        Task<ReadUserDto> Create(CreateUserDto user);
+        Task<ReadUserDto> Update(UpdateUserDto user, Guid id);
+        Task Delete(Guid id);
+        Task<ReadUserDto> Login(string email, string password);
     }
 }

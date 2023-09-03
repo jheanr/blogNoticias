@@ -1,4 +1,5 @@
-﻿using BlogPetNews.API.Domain.Users;
+﻿using BlogPetNews.API.Domain.News;
+using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.News;
 using BlogPetNews.API.Infra.Users;
 
@@ -12,7 +13,7 @@ namespace BlogPetNews.API.Infra.Contexts
         {
         }
 
-        public DbSet<Domain.News.News> News { get; set; }
+        public DbSet<Notice> News { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

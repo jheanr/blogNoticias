@@ -15,22 +15,22 @@ namespace BlogPetNews.API.Service.News
             _newsRepository = newsRepository;
         }
 
-        public ReadNewsDto Create(CreateNewsDto newsDto, Guid userId)
+        public async Task<ReadNewsDto> Create(CreateNewsDto newsDto, Guid userId)
         {
-            Domain.News.News news = _mapper.Map<Domain.News.News>(newsDto);
+            Notice news = _mapper.Map<Notice>(newsDto);
             news.UserId = userId;
 
-            return _mapper.Map<ReadNewsDto>(_newsRepository.Create(news));
+            return _mapper.Map<ReadNewsDto>(await _newsRepository.Create(news));
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            _newsRepository.Delete(id);
+            await _newsRepository.Delete(id);
         }
 
-        public IEnumerable<ReadNewsDto> GetAll()
+        public async Task<IEnumerable<ReadNewsDto>> GetAll()
         {
-            IEnumerable<Domain.News.News> news = _newsRepository.GetAll();
+            IEnumerable<Notice> news = await _newsRepository.GetAll();
 
             if (news is not null)
             {
@@ -43,9 +43,9 @@ namespace BlogPetNews.API.Service.News
                
         }
 
-        public ReadNewsDto GetById(Guid id)
+        public async Task<ReadNewsDto> GetById(Guid id)
         {
-           Domain.News.News news = _newsRepository.GetById(id);
+           Notice news = await _newsRepository.GetById(id);
 
             if (news is not null)
             {
@@ -57,14 +57,14 @@ namespace BlogPetNews.API.Service.News
             return null;
         }
 
-        public ReadNewsDto Update(Guid id, UpdateNewsDto newsDto)
+        public async Task<ReadNewsDto> Update(Guid id, UpdateNewsDto newsDto)
         {
-            Domain.News.News news = _newsRepository.GetById(id);
+            Notice news = await _newsRepository.GetById(id);
 
             if (news is null)
                 return null;
 
-           Domain.News.News newsUpdate = _mapper.Map(newsDto, news);
+           Notice newsUpdate = _mapper.Map(newsDto, news);
 
             return _mapper.Map<ReadNewsDto>(_newsRepository.Update(newsUpdate));
         }

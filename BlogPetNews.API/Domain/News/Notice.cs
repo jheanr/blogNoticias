@@ -3,7 +3,7 @@ using BlogPetNews.API.Domain.Utils;
 
 namespace BlogPetNews.API.Domain.News
 {
-    public class News : ClassBase
+    public class Notice : ClassBase
     {
         public string Title { get; set; }
         public string Content { get; set; }
@@ -11,9 +11,9 @@ namespace BlogPetNews.API.Domain.News
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
 
-        public News() { }
+        public Notice() { }
 
-        public News(string title, string content, Guid userId) : base()
+        public Notice(string title, string content, Guid userId) : base()
         {
             Title = title;
             Content = content;

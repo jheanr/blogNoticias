@@ -20,9 +20,9 @@ public class CreateNewsCommandHandler : IRequestHandler<CreateNewsCommand, Creat
     {
       
 
-        var user = _userService.GetByEmail(request.UserEmail);
+        var user = await _userService.GetByEmail(request.UserEmail);
 
-        var addedNews = _newsService.Create(request.CreateNewsDto, user.Id);
+        var addedNews = await _newsService.Create(request.CreateNewsDto, user.Id);
 
         if (addedNews != null)
         {

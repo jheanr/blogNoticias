@@ -16,7 +16,7 @@ public class GetAllNewsQueryHandler : IRequestHandler<GetAllNewsQuery, GetAllNew
     {
         var news = new GetAllNewsQueryResponse
         {
-            News = _newsService.GetAll()
+            News = await _newsService.GetAll()
         };
 
         return news;

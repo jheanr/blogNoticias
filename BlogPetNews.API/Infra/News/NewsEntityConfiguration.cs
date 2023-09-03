@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BlogPetNews.API.Infra.News
 {
-    public class NewsEntityConfiguration : IEntityTypeConfiguration<Domain.News.News>
+    public class NewsEntityConfiguration : IEntityTypeConfiguration<Domain.News.Notice>
     {
-        public void Configure(EntityTypeBuilder<Domain.News.News> builder)
+        public void Configure(EntityTypeBuilder<Domain.News.Notice> builder)
         {
             builder.HasKey(prop => prop.Id);
             builder.Property(prop => prop.Title).IsRequired().HasMaxLength(100);

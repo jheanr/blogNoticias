@@ -18,13 +18,13 @@ namespace BlogPetNews.API.Domain.UseCases.LoginUser
 
     public async Task<LoginUserCommandResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-      var token = Login(request.Email, request.Password);
+      var token = await Login(request.Email, request.Password);
       return new LoginUserCommandResponse { Token = token, Success = true };
     }
 
-    private string Login(string email, string password)
+    private async Task<string> Login(string email, string password)
     {
-      var user = _userService.Login(email, password);
+      var user = await _userService.Login(email, password);
       if (user is not null)
       {
         var token = _tokenService.GenerateToken(user);
