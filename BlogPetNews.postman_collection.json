@@ -15,12 +15,10 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5246/login?email=tony-hawk@skate.com&password=First900Landed!",
-							"protocol": "http",
+							"raw": "{{base_url}}/login?email=tony-hawk@skate.com&password=First900Landed!",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"login"
 							],
@@ -53,12 +51,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5246/create",
-							"protocol": "http",
+							"raw": "{{base_url}}/create",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"create"
 							]
@@ -77,12 +73,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5246/news",
-							"protocol": "http",
+							"raw": "{{base_url}}/news",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"news"
 							]
@@ -96,12 +90,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5246/news/c7546946-92a4-4cf8-8793-ac2b9ada412d",
-							"protocol": "http",
+							"raw": "{{base_url}}/news/c7546946-92a4-4cf8-8793-ac2b9ada412d",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"news",
 								"c7546946-92a4-4cf8-8793-ac2b9ada412d"
@@ -117,7 +109,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Chocante! Cachorro caramelo faz mortal de skate na pista e sai ileso\",\r\n    \"content\": \"Em um evento surpreendente no Parque Radical Aventura, um cachorro da raça caramelo chamado Jaguarinha realizou uma manobra mortal em uma pista de skate, executando um giro de 720 graus no ar, e saiu ileso. O treinador, Carlos Mendes, compartilhou a incrível jornada de treinamento do cachorro, enquanto preocupações sobre seu bem-estar surgiram. Apesar da controvérsia, o vídeo viralizou, mostrando que o cachorro caramelo conquistou seu lugar na história dos esportes radicais.\",\r\n    \"userId\": \"1de80b20-c10f-4b02-9c79-c0b282cdcb47\"\r\n}",
+							"raw": "{\r\n    \"title\": \"Chocante! Cachorro caramelo faz mortal de skate na pista e sai ileso\",\r\n    \"content\": \"Em um evento surpreendente no Parque Radical Aventura, um cachorro da raça caramelo chamado Jaguarinha realizou uma manobra mortal em uma pista de skate, executando um giro de 720 graus no ar, e saiu ileso. O treinador, Carlos Mendes, compartilhou a incrível jornada de treinamento do cachorro, enquanto preocupações sobre seu bem-estar surgiram. Apesar da controvérsia, o vídeo viralizou, mostrando que o cachorro caramelo conquistou seu lugar na história dos esportes radicais.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -145,7 +137,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Impressionante! Cachorro caramelo realizou um mortal de skate saiu ileso\",\r\n    \"content\": \"Um cachorro da raça caramelo, apelidado de Jaguarinha, surpreendeu a todos ao realizar com perfeição uma arriscada manobra de skate no Parque Radical Aventura. O vídeo viral da manobra, na qual o cachorro girou 720 graus no ar, gerou debates sobre segurança animal e admiração pela dedicação do treinador, Carlos Mendes. Enquanto alguns se preocuparam com o bem-estar do cachorro, um veterinário assegurou sua boa saúde. A performance excepcional deixou uma marca na história dos esportes radicais e dividiu opiniões online.\",\r\n    \"userId\": \"1de80b20-c10f-4b02-9c79-c0b282cdcb47\"\r\n}",
+							"raw": "{\r\n    \"title\": \"Impressionante! Cachorro caramelo realizou um mortal de skate saiu ileso\",\r\n    \"content\": \"Um cachorro da raça caramelo, apelidado de Jaguarinha, surpreendeu a todos ao realizar com perfeição uma arriscada manobra de skate no Parque Radical Aventura. O vídeo viral da manobra, na qual o cachorro girou 720 graus no ar, gerou debates sobre segurança animal e admiração pela dedicação do treinador, Carlos Mendes. Enquanto alguns se preocuparam com o bem-estar do cachorro, um veterinário assegurou sua boa saúde. A performance excepcional deixou uma marca na história dos esportes radicais e dividiu opiniões online.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -153,12 +145,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5246/news/c7546946-92a4-4cf8-8793-ac2b9ada412d",
-							"protocol": "http",
+							"raw": "{{base_url}}/news/c7546946-92a4-4cf8-8793-ac2b9ada412d",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"news",
 								"c7546946-92a4-4cf8-8793-ac2b9ada412d"
@@ -173,15 +163,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5246/news/3fa85f64-5717-4562-b3fc-2c963f66afa6",
-							"protocol": "http",
+							"raw": "{{base_url}}/news/c7546946-92a4-4cf8-8793-ac2b9ada412d",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "5246",
 							"path": [
 								"news",
-								"3fa85f64-5717-4562-b3fc-2c963f66afa6"
+								"c7546946-92a4-4cf8-8793-ac2b9ada412d"
 							]
 						}
 					},
@@ -195,7 +183,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRvbnktaGF3a0Bza2F0ZS5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE2OTI4MzYxODksImV4cCI6MTY5Mjg0MzM4OSwiaWF0IjoxNjkyODM2MTg5fQ.2IPX6dK2zyKhfBBL-sXVT7_9TBLB4chrRJ1bXANkZKg",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlRvbnkgSGF3ayIsImVtYWlsIjoidG9ueS1oYXdrQHNrYXRlLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTY5MzgzMDk5NywiZXhwIjoxNjkzODM4MTk3LCJpYXQiOjE2OTM4MzA5OTd9.5Jdbj2BVVCnVzNUoLrZ6D8ccDar6QI_xfYbJVuLyBwc",
 				"type": "string"
 			}
 		]
@@ -218,6 +206,13 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5246",
+			"type": "string"
 		}
 	]
 }

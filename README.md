@@ -12,6 +12,10 @@ O projeto consiste em uma aplicação web desenvolvido em C# com .NET 7 e Minima
 
 O projeto segue um padrão baseado na arquitetura Domain-Driven Design (DDD) para uma melhor organização e manutenção do código. A estrutura DDD divide o código em camadas com responsabilidades bem definidas, as camadas que estamos utilizando no projeto são as seguintes:
 
+- **Camada de Apresentação**: Essa camada lida com a interação com o servidor através da estrutura em modulos.
+
+- **Camada de Aplicação**: Esta camada atua como intermediária entre a interface de usuário e o domínio. Ela contém serviços de aplicação que coordenam as ações do usuário e orquestram a interação com o domínio.
+
 - **Camada de Domínio**: O coração do sistema, onde a lógica de negócios reside. Inclui entidades, agregados, serviços de domínio e objetos de valor.
 
 - **Camada de Infraestrutura**: Gerencia aspectos técnicos, como acesso a banco de dados, serviços externos e comunicação com a camada de domínio. Nesta camada, utiliza-se o Entity Framework Core para interagir com o banco de dados SQL Server.
@@ -43,6 +47,23 @@ Deixamos disponíveis dois usuários com _roles_ distintas para teste, sendo:
 > Há possibilidade de criar outros usuários conforme necessidade através do endpoint disponibilizado.
 
 Para a remoção de uma notícia, é obrigatório a _role_ de **admin** para executar a operação.
+
+### Utilizando a Coleção do Postman
+
+- Certifique-se de que a aplicação esteja em execução em seu ambiente local, de homologação ou na Azure.
+- Tenha o Postman ou um software similar instalado em seu computador.
+
+1. **Importar a Coleção**:
+   - Faça o download da coleção localizada na raiz do projeto: `BlogPetNews.postman_collection.json`.
+   - Abra o software e importe a coleção usando "File" > "Import".
+
+2. **Configurar Autenticação**:
+   - Execute a solicitação de login na coleção para obter um token JWT válido.
+   - Cole o token JWT obtido na etapa anterior na aba "Authorization" dentro da coleção, selecionando o tipo "Bearer Token" para propagar o token em todas as solicitações.
+
+3. **Configurar Variável para as Solicitações**:
+   - Ainda na coleção, clique na aba "Variables". Lá, você encontrará uma variável chamada `base_url`.
+   - Substitua o valor atual pela URL do ambiente desejado. Essa configuração será propagada para todas as solicitações que utilizam a variável `{{base_url}}`.
 
 ## Conclusão
 
