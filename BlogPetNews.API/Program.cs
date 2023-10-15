@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGenJwt("v1",
 builder.Services.AddDbServices(builder.Configuration);
 builder.Services.AddTransient<TokenService>();
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
