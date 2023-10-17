@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <Compile Remove="Services\ViewModels\Utils.cs" />
+	  <InternalsVisibleTo Include="BlogPetNews.Unit.Tests"/>
+	  <InternalsVisibleTo Include="BlogPetNews.Integration.Tests"/>
   </ItemGroup>
 
   <ItemGroup>
