@@ -1,3 +1,4 @@
+using BlogPetNews.API.Domain.News;
 using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Service.ViewModels.News;
 using BlogPetNews.Unit.Tests.Utils;
@@ -33,7 +34,6 @@ namespace BlogPetNews.Unit.Tests.Post
 
             var user = new User
             {
-                Name = "El Gato",
                 Email = "elgato@miau.net",
             };
 
@@ -69,7 +69,7 @@ namespace BlogPetNews.Unit.Tests.Post
             var user = new User
             {
                 Email = "admin@admin.com",
-                Password = "SenhaSecreta"
+                Password = "pass123"
             };
 
             var client = application.CreateClient();
