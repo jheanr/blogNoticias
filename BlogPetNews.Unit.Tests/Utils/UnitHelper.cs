@@ -14,7 +14,7 @@ namespace BlogPetNews.Unit.Tests.Utils
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        public static void AssertStatusCodeUnauthorizedd(HttpResponseMessage response)
+        public static void AssertStatusCodeUnauthorized(HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
