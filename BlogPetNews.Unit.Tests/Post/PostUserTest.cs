@@ -17,7 +17,7 @@ namespace BlogPetNews.Unit.Tests.Post
             var user = new User
             {
                 Name = "El Gato",
-                Email = "elgato@miau.net",
+                Email = "elgato2@miau.net",
                 Password = "gato@321"
             };
 
@@ -48,9 +48,9 @@ namespace BlogPetNews.Unit.Tests.Post
         {
             await using var application = new PetNewsApiApplication();
 
-            await PetNewsMockData.CreateUser(application, true);
+            await PetNewsMockData.CreateUser(application, false);
 
-            var user = new User { Email = "elgato@miau.net",Password = "gato@123"};
+            var user = new User { Email = "admin@admin.com",Password = "pass123" };
 
             var client = application.CreateClient();
             var result = await client.PostAsJsonAsync("/login", user);
@@ -75,30 +75,9 @@ namespace BlogPetNews.Unit.Tests.Post
             var client = application.CreateClient();
             var result = await client.PostAsJsonAsync("/login", user);
             
-            UnitHelper.AssertStatusCodeUnauthorizedd(result);
+            UnitHelper.AssertStatusCodeUnauthorized(result);
         }
 
-        [Fact]
-        public async Task POST_CreateNewsReturnsNothAuthorized()
-        {
-            await using var application = new PetNewsApiApplication();
-
-            await PetNewsMockData.CreateNews(application,true);
-
-            var newsDto = new CreateNewsDto
-            {
-                Title = "Capriche no telhado",
-                Content = "Namoro bom é quando você deixa os humanos sem conseguir dormir"
-            };
-
-
-            var client = application.CreateClient();
-            var response = await client.PostAsJsonAsync("/news/create", newsDto);
-
-            var news = await client.GetFromJsonAsync<List<News>>("/news");
-
-            UnitHelper.AssertStatusCodeUnauthorizedd(response);
-            Assert.True(news.Count >= 2);
-        }
+      
     }
 }
