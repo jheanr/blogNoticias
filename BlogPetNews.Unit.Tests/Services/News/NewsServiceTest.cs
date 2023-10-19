@@ -6,24 +6,23 @@ using BlogPetNews.Tests.Common.News;
 using NSubstitute;
 using Xunit;
 
-namespace BlogPetNews.Unit.Tests.Post
+namespace BlogPetNews.Unit.Tests.Services.News
 {
-    public class PostNewsTest
+    public class NewsServiceTest
     {
         private readonly IMapper _mapper;
         private readonly NewsService _newsService;
         private readonly INewsRepository _newsRepository;
 
-        public PostNewsTest()
+        public NewsServiceTest()
         {
             _mapper = Substitute.For<IMapper>();
             _newsRepository = Substitute.For<INewsRepository>();
             _newsService = new NewsService(_newsRepository, _mapper);
         }
 
-        #region Services Tests
         [Fact]
-        public void Should_Create_News_Successfully()
+        public void Create_News_ShouldReturnSuccess()
         {
             //Arrange
             var userId = Guid.NewGuid();
@@ -31,7 +30,7 @@ namespace BlogPetNews.Unit.Tests.Post
             var newsDto = NewsTestFixture.CreateNewsDtoFaker.Generate();
             var readNewsDto = NewsTestFixture.ReadNewsDtoFaker.Generate();
 
-            _mapper.Map<News>(newsDto).Returns(news);
+            _mapper.Map<API.Domain.News.News>(newsDto).Returns(news);
             news.UserId = userId;
             _newsRepository.Create(news).Returns(news);
             _mapper.Map<ReadNewsDto>(news).Returns(readNewsDto);
@@ -45,7 +44,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Update_News_Successfully()
+        public void Update_News_ShouldReturnSuccess()
         {
             //Arrange
             var newsId = Guid.NewGuid();
@@ -68,7 +67,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Delete_News_Successfully()
+        public void Delete_News_ShouldReturnSuccess()
         {
             //Arrange
             var newsId = Guid.NewGuid();
@@ -81,7 +80,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_GetAll_News_Successfully()
+        public void GetAll_News_ShouldReturnSuccess()
         {
             // Arrange
             var newsList = NewsTestFixture.NewsFaker.Generate(3);
@@ -100,7 +99,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_GetId_News_Successfully()
+        public void GetId_News_ShouldReturnSuccess()
         {
             // Arrange
             var newsId = Guid.NewGuid();
@@ -116,6 +115,5 @@ namespace BlogPetNews.Unit.Tests.Post
             // Assert
             Assert.Equal(readNewsDto, response);
         }
-        #endregion
     }
 }

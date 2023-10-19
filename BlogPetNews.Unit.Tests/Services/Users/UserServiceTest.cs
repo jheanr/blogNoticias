@@ -5,24 +5,23 @@ using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Tests.Common.Users;
 using NSubstitute;
 
-namespace BlogPetNews.Unit.Tests.Post
+namespace BlogPetNews.Unit.Tests.Services.Users
 {
-    public class PostUserTest
+    public class UserServiceTest
     {
         private readonly IMapper _mapper;
         private readonly UserService _userService;
         private readonly IUserRepository _userRepository;
 
-        public PostUserTest()
+        public UserServiceTest()
         {
             _mapper = Substitute.For<IMapper>();
             _userRepository = Substitute.For<IUserRepository>();
             _userService = new UserService(_userRepository, _mapper);
         }
 
-        #region Services Tests
         [Fact]
-        public void Should_Login_User_Successfully()
+        public void Login_User_ShouldReturnSuccess()
         {
             // Arrange
             var user = UserTestFixture.UserFaker.Generate();
@@ -42,7 +41,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
        
         [Fact]
-        public void Should_Create_User_Successfully()
+        public void Create_User_ShouldReturnSuccess()
         {
             // Arrange
             var createUserDto = UserTestFixture.CreateUserDtoFaker.Generate();
@@ -62,7 +61,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Update_User_Successfully()
+        public void Update_User_ShouldReturnSuccess()
         {
             // Arrange
             var userId = Guid.NewGuid();
@@ -85,7 +84,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Delete_User_Successfully()
+        public void Delete_User_ShouldReturnSuccess()
         {
             // Arrange
             var userId = Guid.NewGuid();
@@ -98,7 +97,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Get_All_Users_Successfully()
+        public void GetAll_Users_ShouldReturnSuccess()
         {
             // Arrange
             var page = 1;
@@ -119,7 +118,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Get_User_By_Email_Successfully()
+        public void GetByEmail_User_ShouldReturnSuccess()
         {
             // Arrange
             var user = UserTestFixture.UserFaker.Generate();
@@ -138,7 +137,7 @@ namespace BlogPetNews.Unit.Tests.Post
         }
 
         [Fact]
-        public void Should_Get_User_By_Id_Successfully()
+        public void GetById_User_ShouldReturnSuccess()
         {
             // Arrange
             var userId = Guid.NewGuid();
@@ -155,6 +154,5 @@ namespace BlogPetNews.Unit.Tests.Post
             Assert.NotNull(response);
             Assert.Equal(readUserDto, response);
         }
-        #endregion
     }
 }
