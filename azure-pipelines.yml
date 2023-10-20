@@ -1,6 +1,5 @@
 trigger:
 - main
-- feat-test-pipe
 
 resources:
 - repo: self
