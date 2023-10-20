@@ -16,7 +16,11 @@ public static class UserModule
         {
             var loginCommand = new LoginUserCommand { Email = email, Password = password };
             var login = mediator.Send(loginCommand);
-            return login;
+
+            if (login.Result.Token == "Unauthorized Access")
+                return Results.Unauthorized();
+            
+            return login is not null ? Results.Ok(login) : Results.BadRequest();
         }).AllowAnonymous();
 
         app.MapPost("/create", async (IMediator mediator, IValidator<CreateUserDto> validator, CreateUserDto user) =>
