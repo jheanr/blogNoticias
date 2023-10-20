@@ -1,6 +1,6 @@
 trigger:
 - main
-- fetat-test-pipe
+- feat-test-pipe
 
 resources:
 - repo: self
