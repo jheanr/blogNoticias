@@ -25,7 +25,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - script: dotnet test $(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests.csproj --configuration Release
+    - script: dotnet test $(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj --configuration Release
       displayName: 'Run Integration Tests'
 
 
