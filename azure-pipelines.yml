@@ -7,6 +7,7 @@ resources:
 
 variables:
   unitTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Unit.Tests/BlogPetNews.Unit.Tests.csproj'
+  integrationTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj'
   vmImageName: 'ubuntu-latest'
 
 stages:
@@ -25,7 +26,32 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - script: dotnet test $(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj --configuration Release
+    - script: dotnet test $(integrationTeste) --configuration Release
       displayName: 'Run Integration Tests'
 
-
+- stage: BuildAndPush
+  displayName: 'Build and Push Stage'
+  jobs:
+  - job: BuildContainer
+    displayName: 'Build and Push Container ACR'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: '$(AZURE_SUBSCRIPTION)'
+        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
+        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
+        action: 'Build services'
+        includeSourceTags: true
+        includeLatestTag: true
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: '$(AZURE_SUBSCRIPTION)'
+        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
+        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
+        action: 'Push services'
+        includeSourceTags: true
+        includeLatestTag: true
