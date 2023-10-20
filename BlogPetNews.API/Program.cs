@@ -45,4 +45,4 @@ app.AddNewsEndpoints();
 
 app.Run();
 
-public partial class Program() { }
+public partial class Program { }

@@ -16,7 +16,7 @@ namespace BlogPetNews.Integration.Tests.Util
 
             builder.ConfigureServices(services =>
             {
-                services.RemoveAll(typeof(DbContextOptions<BlogPetNewsDbContext>))
+                services.RemoveAll(typeof(DbContextOptions<BlogPetNewsDbContext>));
 
                 services.AddDbContext<BlogPetNewsDbContext>(options =>
                     options.UseInMemoryDatabase("BlogPetNewsDb", root));
