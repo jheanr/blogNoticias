@@ -1,18 +1,23 @@
-﻿using BlogPetNews.API.Domain.Users;
+﻿using AutoMapper;
+using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Utils;
-
+using BlogPetNews.API.Service.Users;
+using BlogPetNews.API.Service.ViewModels.Users;
 using MediatR;
 
 namespace BlogPetNews.API.Domain.UseCases.LoginUser
 {
   public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginUserCommandResponse>
   {
-    private readonly IUserRepository _userService;
+    private readonly IUserService _userService;
+    private readonly IMapper _mapper;
     private readonly TokenService _tokenService;
 
-    public LoginUserCommandHandler(IUserRepository userService, TokenService tokenService)
+
+    public LoginUserCommandHandler(IUserService userService, TokenService tokenService, IMapper mapper)
     {
       _userService = userService;
+      _mapper = mapper;
       _tokenService = tokenService;
     }
 
@@ -27,7 +32,7 @@ namespace BlogPetNews.API.Domain.UseCases.LoginUser
       var user = _userService.Login(email, password);
       if (user is not null)
       {
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateToken(_mapper.Map<User>(user));
         return token;
       }
       return "Unauthorized Access";

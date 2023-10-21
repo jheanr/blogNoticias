@@ -10,6 +10,7 @@ namespace BlogPetNews.API.Service.Profiles
         {
             CreateMap<CreateUserDto, User>();
             CreateMap<User, ReadUserDto>();
+            CreateMap<ReadUserDto, User>();
             CreateMap<UpdateUserDto, User>();
         }
     }
