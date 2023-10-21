@@ -1,6 +1,7 @@
 ﻿using BlogPetNews.API.Domain.News;
 using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
+using BlogPetNews.API.Infra.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogPetNews.Integration.Tests.Util
@@ -9,6 +10,8 @@ namespace BlogPetNews.Integration.Tests.Util
     {
         public static async Task CreateUser(PetNewsApiApplication application, bool create)
         {
+            var cryptography = new Cryptography();
+
             using (var scope = application.Services.CreateScope())
             {
                 var provider = scope.ServiceProvider;
@@ -18,7 +21,12 @@ namespace BlogPetNews.Integration.Tests.Util
 
                     if (create)
                     {
-                        await petNewsDbContext.Users.AddAsync(new User { Name = "El Gato", Email = "elgato@miau.net", Password = "gato@123" });
+                        await petNewsDbContext.Users.AddAsync(new User 
+                        { 
+                            Name = "El Gato", 
+                            Email = "elgato@miau.net", 
+                            Password = cryptography.Encodes("gato@123") 
+                        });
                         await petNewsDbContext.SaveChangesAsync();
                     }
                 }

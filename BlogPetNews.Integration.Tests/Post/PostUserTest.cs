@@ -1,28 +1,31 @@
-using BlogPetNews.API.Domain.News;
-using BlogPetNews.API.Domain.Users;
-using BlogPetNews.API.Service.ViewModels.News;
+using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Integration.Tests.Util;
-using Microsoft.AspNetCore.Http.Extensions;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post
 {
-    public class PostUserTest
+    public class PostUserTest : IClassFixture<PetNewsApiApplication>
     {
+        private readonly PetNewsApiApplication _application;
+        private readonly HttpClient _httpClient;
+
+        public PostUserTest(PetNewsApiApplication application)
+        {
+            _application = application;
+            _httpClient = application.CreateClient();
+        }
+
         [Fact]
         public async Task POST_CreateUserReturnOk()
         {
-            await using var application = new PetNewsApiApplication();
-
-            var user = new User
+            var user = new CreateUserDto
             {
                 Name = "El Gato",
                 Email = "elgato@miau.net",
                 Password = "gato@321"
             };
 
-            var client = application.CreateClient();
-            var result = await client.PostAsJsonAsync("/create", user);
+            var result = await _httpClient.PostAsJsonAsync("/create", user);
 
             IntegrationTestHelpers.AssertStatusCodeOk(result);
         }
@@ -30,16 +33,13 @@ namespace BlogPetNews.Integration.Tests.Post
         [Fact]
         public async Task POST_CreateUserReturnFailure()
         {
-            await using var application = new PetNewsApiApplication();
-
-            var user = new User
+            var user = new CreateUserDto
             {
                 Name = "El Gato",
                 Email = "elgato@miau.net",
             };
 
-            var client = application.CreateClient();
-            var result = await client.PostAsJsonAsync("/create", user);
+            var result = await _httpClient.PostAsJsonAsync("/create", user);
 
             IntegrationTestHelpers.AssertStatusCodeBadRequest(result);
         }
@@ -47,14 +47,16 @@ namespace BlogPetNews.Integration.Tests.Post
         [Fact]
         public async Task POST_LoginSuccess()
         {
-            await using var application = new PetNewsApiApplication();
+            await PetNewsMockData.CreateUser(_application, true);
 
-            await PetNewsMockData.CreateUser(application, true);
+            var user = new 
+            { 
+                Email = "elgato@miau.net", 
+                Password = "gato@123"
+            };
 
-            var user = new User { Email = "elgato@miau.net", Password = "gato@123" };
-
-            var client = application.CreateClient();
-            var result = await client.PostAsJsonAsync("/login", user);
+            var url = $"/login?email={user.Email}&password={user.Password}";
+            var result = await _httpClient.PostAsync(url, null);
 
             IntegrationTestHelpers.AssertStatusCodeOk(result);
 
@@ -63,18 +65,16 @@ namespace BlogPetNews.Integration.Tests.Post
         [Fact]
         public async Task POST_LoginUnauthorized()
         {
-            await using var application = new PetNewsApiApplication();
+            await PetNewsMockData.CreateUser(_application, true);
 
-            await PetNewsMockData.CreateUser(application, true);
-
-            var user = new User
+            var user = new
             {
                 Email = "admin@admin.com",
                 Password = "SenhaSecreta"
             };
 
-            var client = application.CreateClient();
-            var result = await client.PostAsJsonAsync("/login", user);
+            var url = $"/login?email={user.Email}&password={user.Password}";
+            var result = await _httpClient.PostAsync(url, null);
 
             IntegrationTestHelpers.AssertStatusCodeUnauthorized(result);
         }
