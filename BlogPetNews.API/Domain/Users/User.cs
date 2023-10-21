@@ -21,5 +21,11 @@ namespace BlogPetNews.API.Domain.Users
             Role = role;
         }
 
+        public User(string name, string email, RolesUser role)
+        {
+            Name = name;
+            Email = email;
+            Role = role;
+        }
     }
 }

@@ -44,3 +44,5 @@ app.AddUserEndpoints();
 app.AddNewsEndpoints();
 
 app.Run();
+
+public partial class Program { }
