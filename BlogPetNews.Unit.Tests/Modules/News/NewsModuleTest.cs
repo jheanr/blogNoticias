@@ -9,7 +9,7 @@ using System.Net.Http.Json;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Tests.Common.Users;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
+using BlogPetNews.API.Domain.Users;
 
 namespace BlogPetNews.Unit.Tests.Modules.News
 {
@@ -20,9 +20,9 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         public NewsModuleTest(CustomWebApplicationFactory<Program> factory)
         {
+
             _factory = factory;
 
-            
             _factory.AddServiceFake(ServicesFakes());
             _factory.AddServiceFake(AuthenticatedUser());
            
@@ -50,13 +50,12 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
-
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
-            var tokenAcesso = tokenService.GenerateToken(new API.Domain.Users.User("Test", "test@test.com", API.Domain.Enums.RolesUser.User));
+            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
 
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAcesso}");
+            var tokenAccess = TokenTest(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
             // Act
             HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
@@ -73,15 +72,13 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
-
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
-
             news.Title = "";
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
-            var tokenAcesso = tokenService.GenerateToken(new API.Domain.Users.User("Test", "test@test.com", API.Domain.Enums.RolesUser.User));
+            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
 
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAcesso}");
+            var tokenAccess = TokenTest(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
             // Act
             HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
@@ -97,11 +94,10 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
+            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
-            var tokenAcesso = tokenService.GenerateToken(new API.Domain.Users.User("Test", "test@test.com", API.Domain.Enums.RolesUser.User));
-
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAcesso}");
+            var tokenAccess = TokenTest(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
             var id = Guid.NewGuid();
 
@@ -119,11 +115,10 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
+            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.Admin);
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
-            var tokenAcesso = tokenService.GenerateToken(new API.Domain.Users.User("Test", "test@test.com", API.Domain.Enums.RolesUser.Admin));
-
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAcesso}");
+            var tokenAccess = TokenTest(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
             var id = Guid.NewGuid();
 
@@ -141,13 +136,12 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
-
             var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
-            var tokenAcesso = tokenService.GenerateToken(new API.Domain.Users.User("Test", "test@test.com", API.Domain.Enums.RolesUser.User));
+            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
 
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAcesso}");
+            var tokenAccess = TokenTest(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
             var id = Guid.NewGuid();
 
@@ -163,6 +157,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         private static INewsService ServicesFakes()
         {
+
             var newsServiceFake = Substitute.For<INewsService>();
 
             //GetAll
@@ -181,16 +176,27 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             newsServiceFake.Create(Arg.Any<CreateNewsDto>(), Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
 
             return newsServiceFake;
+
         }
 
         private static IUserService AuthenticatedUser()
         {
+
             //User
             var userServiceFake = Substitute.For<IUserService>();
-
             userServiceFake.GetByEmail(Arg.Any<string>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
 
             return userServiceFake;
+
+        }
+
+        private string TokenTest(User user)
+        {
+
+            var tokenService = _factory.Services.GetRequiredService<TokenService>();
+
+            return tokenService.GenerateToken(user);
+
         }
 
     }

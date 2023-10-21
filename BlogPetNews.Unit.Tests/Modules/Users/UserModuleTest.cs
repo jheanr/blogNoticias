@@ -29,15 +29,12 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
         {
 
             //Arrange
-
             var login = new { Email = "test@test.com", Password = "123456" };
 
             //Act
-
             HttpResponseMessage response = await _client.PostAsync($"/login?email={login.Email}&password={login.Password}", null);
 
             //Assert
-
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -53,8 +50,8 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
         [Fact]
         public async Task Create_User_ShouldReturnSuccess()
         {
-            //Arrange
 
+            //Arrange
             var user = UserTestFixture.CreateUserDtoFaker.Generate();
 
             //Act
@@ -62,6 +59,7 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
         }
 
 
@@ -69,8 +67,8 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
         [Fact]
         public async Task Create_User_ShouldReturnInvalid()
         {
-            //Arrange
 
+            //Arrange
             var user = UserTestFixture.CreateUserDtoFaker.Generate();
             user.Email = "test";
             user.Password = "";
@@ -80,12 +78,14 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
 
             //Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
         }
 
 
 
         private static IUserService ServicesFakes()
         {
+
             var userServiceFake = Substitute.For<IUserService>();
 
             //Create
@@ -95,6 +95,7 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             userServiceFake.Login(Arg.Any<string>(), Arg.Any<string>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
 
             return userServiceFake;
+
         }
     }
 }
