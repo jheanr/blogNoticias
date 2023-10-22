@@ -52,7 +52,8 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
 
-            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = API.Domain.Enums.RolesUser.User;
 
             var tokenAccess = TokenTest(user);
             _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
@@ -75,7 +76,8 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
             news.Title = "";
 
-            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = API.Domain.Enums.RolesUser.User;
 
             var tokenAccess = TokenTest(user);
             _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
@@ -94,7 +96,8 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
-            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = API.Domain.Enums.RolesUser.User;
 
             var tokenAccess = TokenTest(user);
             _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
@@ -115,7 +118,8 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             //Arrange
-            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.Admin);
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = API.Domain.Enums.RolesUser.Admin;
 
             var tokenAccess = TokenTest(user);
             _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
@@ -138,7 +142,8 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
 
-            var user = new User("Test", "test@test.com", API.Domain.Enums.RolesUser.User);
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = API.Domain.Enums.RolesUser.User;
 
             var tokenAccess = TokenTest(user);
             _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
