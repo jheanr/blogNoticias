@@ -18,6 +18,10 @@ namespace BlogPetNews.API.Service.News
         public ReadNewsDto Create(CreateNewsDto newsDto, Guid userId)
         {
             Domain.News.News news = _mapper.Map<Domain.News.News>(newsDto);
+
+            if (news is null)
+                return null;
+
             news.UserId = userId;
 
             return _mapper.Map<ReadNewsDto>(_newsRepository.Create(news));
@@ -40,12 +44,12 @@ namespace BlogPetNews.API.Service.News
             }
 
             return null;
-               
+
         }
 
         public ReadNewsDto GetById(Guid id)
         {
-           Domain.News.News news = _newsRepository.GetById(id);
+            Domain.News.News news = _newsRepository.GetById(id);
 
             if (news is not null)
             {
@@ -64,7 +68,7 @@ namespace BlogPetNews.API.Service.News
             if (news is null)
                 return null;
 
-           Domain.News.News newsUpdate = _mapper.Map(newsDto, news);
+            Domain.News.News newsUpdate = _mapper.Map(newsDto, news);
 
             return _mapper.Map<ReadNewsDto>(_newsRepository.Update(newsUpdate));
         }
