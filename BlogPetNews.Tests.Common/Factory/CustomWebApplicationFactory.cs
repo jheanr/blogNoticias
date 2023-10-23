@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using BlogPetNews.API.Infra.Contexts;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -17,11 +20,20 @@ namespace BlogPetNews.Tests.Common.Factory
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            var root = new InMemoryDatabaseRoot();
+
             builder.ConfigureServices((context, services) =>
             {
 
                 ReplaceServicesWithFakes(services);
 
+                services.RemoveAll(typeof(DbContextOptions<BlogPetNewsDbContext>));
+                services.AddDbContext<BlogPetNewsDbContext>(options =>
+                {
+                    options.UseSqlServer("Server=.\\SQLEXPRESS01;Database=PetNewsDb;Integrated Security=true;TrustServerCertificate=True;");
+                });
+
+                base.ConfigureWebHost(builder);
             });
         }
 

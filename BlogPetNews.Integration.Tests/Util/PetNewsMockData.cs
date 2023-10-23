@@ -2,13 +2,14 @@
 using BlogPetNews.API.Domain.Users;
 using BlogPetNews.API.Infra.Contexts;
 using BlogPetNews.API.Infra.Utils;
+using BlogPetNews.Tests.Common.Factory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogPetNews.Integration.Tests.Util
 {
     public class PetNewsMockData
     {
-        public static async Task CreateUser(PetNewsApiApplication application, bool create)
+        public static async Task CreateUser(CustomWebApplicationFactory<Program> application, bool create)
         {
             var cryptography = new Cryptography();
 
@@ -33,7 +34,7 @@ namespace BlogPetNews.Integration.Tests.Util
             }
         }
 
-        public static async Task CreateNews(PetNewsApiApplication application, bool create)
+        public static async Task CreateNews(CustomWebApplicationFactory<Program> application, bool create)
         {
             using (var scope = application.Services.CreateScope())
             {

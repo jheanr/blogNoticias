@@ -1,15 +1,16 @@
 using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Integration.Tests.Util;
+using BlogPetNews.Tests.Common.Factory;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post
 {
-    public class PostUserTest : IClassFixture<PetNewsApiApplication>
+    public class PostUserTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly PetNewsApiApplication _application;
+        private readonly CustomWebApplicationFactory<Program> _application;
         private readonly HttpClient _httpClient;
 
-        public PostUserTest(PetNewsApiApplication application)
+        public PostUserTest(CustomWebApplicationFactory<Program> application)
         {
             _application = application;
             _httpClient = application.CreateClient();
@@ -47,7 +48,7 @@ namespace BlogPetNews.Integration.Tests.Post
         [Fact]
         public async Task POST_LoginSuccess()
         {
-            await PetNewsMockData.CreateUser(_application, true);
+            await PetNewsMockData.CreateUser(_application, false);
 
             var user = new 
             { 
@@ -65,7 +66,7 @@ namespace BlogPetNews.Integration.Tests.Post
         [Fact]
         public async Task POST_LoginUnauthorized()
         {
-            await PetNewsMockData.CreateUser(_application, true);
+            await PetNewsMockData.CreateUser(_application, false);
 
             var user = new
             {
