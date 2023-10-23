@@ -18,7 +18,7 @@ public static class NewsModule
             var query = new GetAllNewsQuery();
             var result = mediator.Send(query);
 
-            return result;
+            return Results.Ok(result);
         }).AllowAnonymous();
 
         app.MapGet("/news/{id}", (INewsService newsService, Guid id) =>

@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <Compile Remove="Services\ViewModels\Utils.cs" />
+    <IternalsVisiibleTo Include="BlogPetNews.Integration.Tests" />
+    <IternalsVisiibleTo Include="BlogPetNews.Integration.Unit" />
   </ItemGroup>
 
   <ItemGroup>
