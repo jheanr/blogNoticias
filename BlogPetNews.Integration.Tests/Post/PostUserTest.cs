@@ -1,10 +1,7 @@
 using BlogPetNews.API.Infra.Utils;
-using BlogPetNews.API.Service.Users;
-using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
 using BlogPetNews.Tests.Common.Users;
-using NSubstitute;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post
@@ -20,7 +17,7 @@ namespace BlogPetNews.Integration.Tests.Post
             _application = application;
             _httpClient = application.CreateClient();
             _cryptography = new Cryptography();
-            _application.AddServiceFake(ServicesFakes());
+            _application.AddServiceFake(IntegrationTestHelpers.UserServiceFake());
         }
 
         [Fact]
@@ -83,19 +80,6 @@ namespace BlogPetNews.Integration.Tests.Post
             IntegrationTestHelpers.AssertStatusCodeUnauthorized(result);
         }
 
-        private static IUserService ServicesFakes()
-        {
 
-            var userServiceFake = Substitute.For<IUserService>();
-
-            //Create
-            userServiceFake.Create(Arg.Any<CreateUserDto>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
-
-            //Login
-            userServiceFake.Login(Arg.Any<string>(), Arg.Any<string>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
-
-            return userServiceFake;
-
-        }
     }
 }
