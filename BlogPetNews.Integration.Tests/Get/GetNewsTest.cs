@@ -1,4 +1,6 @@
 using BlogPetNews.API.Domain.Enums;
+using BlogPetNews.API.Domain.News;
+using BlogPetNews.API.Domain.UseCases.CreateNews;
 using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.API.Service.ViewModels.News;
@@ -28,7 +30,27 @@ namespace BlogPetNews.Integration.Tests.Get
         [Fact]
         public async Task Get_News_ShouldReturnAllNews()
         {
-                    
+            //Arrange
+            _httpClient = await LoginUser(true);
+            var newsList = new List<ReadNewsDto>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                newsList.Add(await CreateNews(_httpClient));
+            }
+
+            //Act
+            var response = await _httpClient.GetAsync("/news");
+            var content = await response.Content.ReadAsStringAsync();
+            var news = JsonConvert.DeserializeObject<List<ReadNewsDto>>(content);
+
+            //Asserts
+            Assert.NotNull(news);
+            Assert.True(news.Count >= 3);
+            IntegrationTestHelpers.AssertStatusCodeOk(response);
+
+
+
         }
 
         [Fact]
@@ -43,13 +65,19 @@ namespace BlogPetNews.Integration.Tests.Get
             //Act
             var response = await _httpClient.GetAsync($"/news/{news.Id}");
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<ReadNewsDto>(content);
+            //Asserts
+            IntegrationTestHelpers.AssertStatusCodeOk(response);
+        }
+
+        [Fact]
+        public async Task Get_News_ShouldReturnNotFound()
+        {
+            
+            //Act
+            var response = await _httpClient.GetAsync($"/news/{Guid.NewGuid()}");
 
             //Asserts
-            Assert.NotNull(result!.Title);
-            Assert.Equal(news.Id, result!.Id);
-            IntegrationTestHelpers.AssertStatusCodeOk(response);
+            IntegrationTestHelpers.AssertStatusCodeNotFound(response);
         }
 
 
@@ -85,11 +113,14 @@ namespace BlogPetNews.Integration.Tests.Get
         {
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
             var response = await _httpClient.PostAsJsonAsync("/news", news);
+
             var content = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<ReadNewsDto>(content);
-            
-            return result!;
+            var result = JsonConvert.DeserializeObject<CreateNewsCommandResponse>(content);
+
+            IntegrationTestHelpers.AssertStatusCodeOk(response);
+
+            return result!.News;
 
         }
     }
