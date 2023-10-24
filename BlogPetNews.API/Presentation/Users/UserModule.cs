@@ -20,7 +20,7 @@ public static class UserModule
             if (login.Result.Token == "Unauthorized Access")
                 return Results.Unauthorized();
             
-            return login is not null ? Results.Ok(login) : Results.BadRequest();
+            return login is not null ? Results.Ok(login.Result) : Results.BadRequest();
         }).AllowAnonymous();
 
         app.MapPost("/create", async (IMediator mediator, IValidator<CreateUserDto> validator, CreateUserDto user) =>
