@@ -7,7 +7,6 @@ using BlogPetNews.Tests.Common.News;
 using BlogPetNews.Tests.Common.Users;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
-using Xunit.Sdk;
 
 namespace BlogPetNews.Integration.Tests.Post
 {
@@ -32,21 +31,6 @@ namespace BlogPetNews.Integration.Tests.Post
         public async Task Post_News_ShouldReturnSuccess()
         {
             //Arrange
-            //var user = UserTestFixture.UserFaker.Generate();
-            //var tempPassword = user.Password;
-            //user.Password = _cryptography.Encodes(user.Password);
-            //user.Role = RolesUser.Admin;
-
-            //await IntegrationTestsMockData.Createuser(_application, user);
-            //var httpResponse = await _httpClient.PostAsync($"/login?email={user.Email}&password={tempPassword}", null);
-
-            //var content = await httpResponse.Content.ReadAsStringAsync();
-
-            //var result = JsonConvert.DeserializeObject<LoginUserCommandResponse>(content);
-
-            //_httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + result!.Token);
-
-            //Arrange
             _httpClient = await LoginUser(true);
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
 
@@ -55,7 +39,6 @@ namespace BlogPetNews.Integration.Tests.Post
 
             //Asserts
             IntegrationTestHelpers.AssertStatusCodeOk(response);
-
 
         }
 
@@ -72,6 +55,7 @@ namespace BlogPetNews.Integration.Tests.Post
 
             //Asserts
             IntegrationTestHelpers.AssertStatusCodeBadRequest(response);
+
         }
 
         private async Task<HttpClient> LoginUser(bool userIsAdmin)
@@ -80,9 +64,11 @@ namespace BlogPetNews.Integration.Tests.Post
             var user = UserTestFixture.UserFaker.Generate();
             var tempPassword = user.Password;
             user.Password = _cryptography.Encodes(user.Password);
+            
             if(userIsAdmin)
                 user.Role = RolesUser.Admin;
-            user.Role = RolesUser.User;
+            else
+                user.Role = RolesUser.User;
 
             await IntegrationTestsMockData.Createuser(_application, user);
             var httpResponse = await _httpClient.PostAsync($"/login?email={user.Email}&password={tempPassword}", null);
