@@ -1,6 +1,10 @@
+using BlogPetNews.API.Infra.Utils;
+using BlogPetNews.API.Service.Users;
 using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
+using BlogPetNews.Tests.Common.Users;
+using NSubstitute;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post
@@ -9,75 +13,89 @@ namespace BlogPetNews.Integration.Tests.Post
     {
         private readonly CustomWebApplicationFactory<Program> _application;
         private readonly HttpClient _httpClient;
+        private readonly ICryptography _cryptography;
 
         public PostUserTest(CustomWebApplicationFactory<Program> application)
         {
             _application = application;
             _httpClient = application.CreateClient();
+            _cryptography = new Cryptography();
+            _application.AddServiceFake(ServicesFakes());
         }
 
         [Fact]
-        public async Task POST_CreateUserReturnOk()
+        public async Task CreateUser_ShouldReturnSuccess()
         {
-            var user = new CreateUserDto
-            {
-                Name = "El Gato",
-                Email = "elgato@miau.net",
-                Password = "gato@321"
-            };
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
 
+            //Act
             var result = await _httpClient.PostAsJsonAsync("/create", user);
 
+            //Assert
             IntegrationTestHelpers.AssertStatusCodeOk(result);
         }
 
         [Fact]
-        public async Task POST_CreateUserReturnFailure()
+        public async Task CreateUser_SouldReturnFailure()
         {
-            var user = new CreateUserDto
-            {
-                Name = "El Gato",
-                Email = "elgato@miau.net",
-            };
+            //Arrange
+            var user = UserTestFixture.CreateUserDtoFaker.Generate();
+            user.Password = null;
 
+            //Act
             var result = await _httpClient.PostAsJsonAsync("/create", user);
 
+            //Assert
             IntegrationTestHelpers.AssertStatusCodeBadRequest(result);
         }
 
         [Fact]
-        public async Task POST_LoginSuccess()
+        public async Task Login_SouldReturnSuccess()
         {
-            await PetNewsMockData.CreateUser(_application, false);
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            var tempPassword = user.Password;
+            user.Password = _cryptography.Encodes(user.Password);
+            await IntegrationTestsMockData.Createuser(_application, user);
 
-            var user = new 
-            { 
-                Email = "elgato@miau.net", 
-                Password = "gato@123"
-            };
-
-            var url = $"/login?email={user.Email}&password={user.Password}";
+            //Act
+            var url = $"/login?email={user.Email}&password={tempPassword}";
             var result = await _httpClient.PostAsync(url, null);
 
+            //Assert
             IntegrationTestHelpers.AssertStatusCodeOk(result);
-
         }
 
         [Fact]
-        public async Task POST_LoginUnauthorized()
+        public async Task Login_ShouldReturnUnauthorized()
         {
-            await PetNewsMockData.CreateUser(_application, false);
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Password = _cryptography.Encodes(user.Password);
+            await IntegrationTestsMockData.Createuser(_application, user);
 
-            var user = new
-            {
-                Email = "admin@admin.com",
-                Password = "SenhaSecreta"
-            };
-
+            //Act
             var url = $"/login?email={user.Email}&password={user.Password}";
             var result = await _httpClient.PostAsync(url, null);
 
+            //Assert
             IntegrationTestHelpers.AssertStatusCodeUnauthorized(result);
+        }
+
+        private static IUserService ServicesFakes()
+        {
+
+            var userServiceFake = Substitute.For<IUserService>();
+
+            //Create
+            userServiceFake.Create(Arg.Any<CreateUserDto>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
+
+            //Login
+            userServiceFake.Login(Arg.Any<string>(), Arg.Any<string>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
+
+            return userServiceFake;
+
         }
     }
 }
