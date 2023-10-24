@@ -30,7 +30,7 @@ namespace BlogPetNews.Tests.Common.Factory
                 services.RemoveAll(typeof(DbContextOptions<BlogPetNewsDbContext>));
                 services.AddDbContext<BlogPetNewsDbContext>(options =>
                 {
-                    options.UseSqlServer("Server=.\\SQLEXPRESS01;Database=PetNewsDb;Integrated Security=true;TrustServerCertificate=True;");
+                    options.UseInMemoryDatabase("PetNewsDb",root);
                 });
 
                 base.ConfigureWebHost(builder);
