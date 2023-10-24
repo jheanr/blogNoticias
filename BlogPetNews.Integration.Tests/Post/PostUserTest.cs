@@ -17,7 +17,6 @@ namespace BlogPetNews.Integration.Tests.Post
             _application = application;
             _httpClient = application.CreateClient();
             _cryptography = new Cryptography();
-            _application.AddServiceFake(IntegrationTestHelpers.UserServiceFake());
         }
 
         [Fact]

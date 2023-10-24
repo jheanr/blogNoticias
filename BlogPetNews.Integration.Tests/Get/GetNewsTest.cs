@@ -25,7 +25,6 @@ namespace BlogPetNews.Integration.Tests.Get
             _application = application;
             _httpClient = application.CreateClient();
             _cryptography = new Cryptography();
-            _application.AddServiceFake(IntegrationTestHelpers.UserServiceFake());
         }
         [Fact]
         public async Task Get_News_ShouldReturnAllNews()
