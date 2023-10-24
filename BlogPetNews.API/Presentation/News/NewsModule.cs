@@ -46,7 +46,7 @@ public static class NewsModule
 
             var result = mediator.Send(createNewsCommand);
 
-            return Results.Ok(result);
+            return Results.Ok(result.Result);
         }).RequireAuthorization();
 
         app.MapPut("/news/{id}", (IMediator mediator, INewsService newsService, UpdateNewsDto updatedNews, Guid id) =>
