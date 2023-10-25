@@ -25,6 +25,11 @@ namespace BlogPetNews.Integration.Tests.Util
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        public static void AssertStatusCodeForbidden(HttpResponseMessage response)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
         public static void AssertStatusCodeInternalServerErrorRequest(HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
