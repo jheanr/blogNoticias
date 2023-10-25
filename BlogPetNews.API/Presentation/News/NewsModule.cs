@@ -13,12 +13,12 @@ public static class NewsModule
 {
     public static void AddNewsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/news", (IMediator mediator) =>
+        app.MapGet("/news",  async (IMediator mediator) =>
         {
             var query = new GetAllNewsQuery();
-            var result = mediator.Send(query);
+            var result = await mediator.Send(query);
 
-            return Results.Ok(result);
+            return Results.Ok(result.News);
         }).AllowAnonymous();
 
         app.MapGet("/news/{id}", (INewsService newsService, Guid id) =>
