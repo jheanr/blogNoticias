@@ -55,10 +55,10 @@ public static class NewsModule
             var UpdateCommand = new UpdateNewsCommand { UpdateNewsDto = updatedNews, Id = id };
             var update = mediator.Send(UpdateCommand);
 
-            if (update is null)
+            if (update.Result.News is null)
                 return Results.NotFound("News not found.");
 
-            return Results.Ok(update);
+            return Results.Ok(update.Result);
 
         }).RequireAuthorization();
 
