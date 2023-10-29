@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogPetNews.API\BlogPetNews.API.csproj" />
+    <ProjectReference Include="..\BlogPetNews.Tests.Common\BlogPetNews.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

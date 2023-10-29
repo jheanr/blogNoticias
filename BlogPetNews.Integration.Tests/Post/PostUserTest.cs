@@ -1,82 +1,91 @@
-using BlogPetNews.API.Service.ViewModels.Users;
+using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Integration.Tests.Util;
+using BlogPetNews.Tests.Common.Factory;
+using BlogPetNews.Tests.Common.Users;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post
 {
-    public class PostUserTest : IClassFixture<PetNewsApiApplication>
+    public class PostUserTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly PetNewsApiApplication _application;
-        private readonly HttpClient _httpClient;
+        private readonly CustomWebApplicationFactory<Program> _application;
+        private HttpClient _httpClient;
+        private readonly TestHelpers _testHelpers;
+        private readonly ICryptography _cryptography;
 
-        public PostUserTest(PetNewsApiApplication application)
+        public PostUserTest(CustomWebApplicationFactory<Program> application)
         {
             _application = application;
             _httpClient = application.CreateClient();
+            _testHelpers = new TestHelpers(_application);
+            _cryptography = new Cryptography();
+
         }
 
         [Fact]
-        public async Task POST_CreateUserReturnOk()
+        [Trait("Post", "Create a new user")]
+        public async Task CreateUser_ShouldReturnSuccess()
         {
-            var user = new CreateUserDto
-            {
-                Name = "El Gato",
-                Email = "elgato@miau.net",
-                Password = "gato@321"
-            };
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
 
+            //Act
             var result = await _httpClient.PostAsJsonAsync("/create", user);
 
-            IntegrationTestHelpers.AssertStatusCodeOk(result);
+            //Assert
+            _testHelpers.AssertStatusCodeOk(result);
         }
 
         [Fact]
-        public async Task POST_CreateUserReturnFailure()
+        [Trait("Post", "Try create a new user missing a required field")]
+        public async Task CreateUser_SouldReturnFailure()
         {
-            var user = new CreateUserDto
-            {
-                Name = "El Gato",
-                Email = "elgato@miau.net",
-            };
+            //Arrange
+            var user = UserTestFixture.CreateUserDtoFaker.Generate();
+            user.Password = null;
 
+            //Act
             var result = await _httpClient.PostAsJsonAsync("/create", user);
 
-            IntegrationTestHelpers.AssertStatusCodeBadRequest(result);
+            //Assert
+            _testHelpers.AssertStatusCodeBadRequest(result);
         }
 
         [Fact]
-        public async Task POST_LoginSuccess()
+        [Trait("Post", "Login with existent user")]
+        public async Task Login_SouldReturnSuccess()
         {
-            await PetNewsMockData.CreateUser(_application, true);
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            var tempPassword = user.Password;
+            user.Password = _cryptography.Encodes(user.Password);
+            await _testHelpers.Createuser(_application, user);
 
-            var user = new 
-            { 
-                Email = "elgato@miau.net", 
-                Password = "gato@123"
-            };
+            //Act
+            var url = $"/login?email={user.Email}&password={tempPassword}";
+            var result = await _httpClient.PostAsync(url, null);
 
+            //Assert
+            _testHelpers.AssertStatusCodeOk(result);
+        }
+
+        [Fact]
+        [Trait("Post", "Login with incorrect fields")]
+        public async Task Login_ShouldReturnUnauthorized()
+        {
+            //Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Password = _cryptography.Encodes(user.Password);
+            await _testHelpers.Createuser(_application, user);
+
+            //Act
             var url = $"/login?email={user.Email}&password={user.Password}";
             var result = await _httpClient.PostAsync(url, null);
 
-            IntegrationTestHelpers.AssertStatusCodeOk(result);
-
+            //Assert
+            _testHelpers.AssertStatusCodeUnauthorized(result);
         }
 
-        [Fact]
-        public async Task POST_LoginUnauthorized()
-        {
-            await PetNewsMockData.CreateUser(_application, true);
 
-            var user = new
-            {
-                Email = "admin@admin.com",
-                Password = "SenhaSecreta"
-            };
-
-            var url = $"/login?email={user.Email}&password={user.Password}";
-            var result = await _httpClient.PostAsync(url, null);
-
-            IntegrationTestHelpers.AssertStatusCodeUnauthorized(result);
-        }
     }
 }
