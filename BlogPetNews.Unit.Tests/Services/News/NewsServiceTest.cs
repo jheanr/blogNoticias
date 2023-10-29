@@ -4,7 +4,7 @@ using BlogPetNews.API.Service.News;
 using BlogPetNews.API.Service.ViewModels.News;
 using BlogPetNews.Tests.Common.News;
 using NSubstitute;
-using Xunit;
+using NSubstitute.ReturnsExtensions;
 
 namespace BlogPetNews.Unit.Tests.Services.News
 {
@@ -44,6 +44,22 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        public void Create_News_ReturnsNull_WhenMapperReturnsNull()
+        {
+            //Arrange
+            var userId = Guid.NewGuid();
+            var newsDto = NewsTestFixture.CreateNewsDtoFaker.Generate();
+
+            _mapper.Map<API.Domain.News.News>(newsDto).ReturnsNull();
+
+            //Act
+            var response = _newsService.Create(newsDto, userId);
+
+            //Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
         public void Update_News_ShouldReturnSuccess()
         {
             //Arrange
@@ -64,6 +80,21 @@ namespace BlogPetNews.Unit.Tests.Services.News
             //Assert
             Assert.NotNull(response);
             Assert.Equal(readNewsDto, response);
+        }
+
+        [Fact]
+        public void Update_News_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var newsId = Guid.NewGuid();
+            var updateNewsDto = NewsTestFixture.UpdateNewsDtoFaker.Generate();
+            _newsRepository.GetById(newsId).ReturnsNull();
+
+            // Act
+            var response = _newsService.Update(newsId, updateNewsDto);
+
+            // Assert
+            Assert.Null(response);
         }
 
         [Fact]
@@ -99,7 +130,20 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
-        public void GetId_News_ShouldReturnSuccess()
+        public void GetAll_News_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            _newsRepository.GetAll().ReturnsNull();
+
+            // Act
+            var response = _newsService.GetAll();
+
+            // Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
+        public void GetById_News_ShouldReturnSuccess()
         {
             // Arrange
             var newsId = Guid.NewGuid();
@@ -114,6 +158,20 @@ namespace BlogPetNews.Unit.Tests.Services.News
 
             // Assert
             Assert.Equal(readNewsDto, response);
+        }
+
+        [Fact]
+        public void GetById_News_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var newsId = Guid.NewGuid();
+            _newsRepository.GetById(newsId).ReturnsNull();
+
+            // Act
+            var response = _newsService.GetById(newsId);
+
+            // Assert
+            Assert.Null(response);
         }
     }
 }

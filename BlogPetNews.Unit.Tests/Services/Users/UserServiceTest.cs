@@ -4,6 +4,7 @@ using BlogPetNews.API.Service.Users;
 using BlogPetNews.API.Service.ViewModels.Users;
 using BlogPetNews.Tests.Common.Users;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 
 namespace BlogPetNews.Unit.Tests.Services.Users
 {
@@ -39,7 +40,23 @@ namespace BlogPetNews.Unit.Tests.Services.Users
             Assert.NotNull(response);
             Assert.Equal(readUserDto, response);
         }
-       
+
+        [Fact]
+        public void Login_User_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            var email = user.Email;
+            var password = user.Password;
+            _userRepository.Login(email, password).ReturnsNull();
+
+            // Act
+            var response = _userService.Login(email, password);
+
+            // Assert
+            Assert.Null(response);
+        }
+
         [Fact]
         public void Create_User_ShouldReturnSuccess()
         {
@@ -58,6 +75,20 @@ namespace BlogPetNews.Unit.Tests.Services.Users
             // Assert
             Assert.NotNull(response);
             Assert.Equal(readUserDto, response);
+        }
+
+        [Fact]
+        public void Create_User_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var userDto = UserTestFixture.CreateUserDtoFaker.Generate();
+            _userRepository.Create(Arg.Any<User>()).ReturnsNull();
+
+            // Act
+            var response = _userService.Create(userDto);
+
+            // Assert
+            Assert.Null(response);
         }
 
         [Fact]
@@ -81,6 +112,21 @@ namespace BlogPetNews.Unit.Tests.Services.Users
             // Assert
             Assert.NotNull(response);
             Assert.Equal(readUserDto, response);
+        }
+
+        [Fact]
+        public void Update_User_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = UserTestFixture.UpdateUserDtoFaker.Generate();
+            _userRepository.GetById(userId).ReturnsNull();
+
+            // Act
+            var response = _userService.Update(updateUserDto, userId);
+
+            // Assert
+            Assert.Null(response);
         }
 
         [Fact]
@@ -118,6 +164,19 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        public void GetAll_Users_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            _userRepository.GetAll(Arg.Any<int>(), Arg.Any<int>()).ReturnsNull();
+
+            // Act
+            var response = _userService.GetAll(1, 10);
+
+            // Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
         public void GetByEmail_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -137,6 +196,21 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        public void GetByEmail_User_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var user = UserTestFixture.UserFaker.Generate();
+            var email = user.Email;
+            _userRepository.GetByEmail(email).ReturnsNull();
+
+            // Act
+            var response = _userService.GetByEmail(email);
+
+            // Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
         public void GetById_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -153,6 +227,20 @@ namespace BlogPetNews.Unit.Tests.Services.Users
             // Assert
             Assert.NotNull(response);
             Assert.Equal(readUserDto, response);
+        }
+
+        [Fact]
+        public void GetById_User_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _userRepository.GetById(userId).ReturnsNull();
+
+            // Act
+            var response = _userService.GetById(userId);
+
+            // Assert
+            Assert.Null(response);
         }
     }
 }

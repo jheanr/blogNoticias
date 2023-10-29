@@ -13,12 +13,12 @@ public static class NewsModule
 {
     public static void AddNewsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/news", (IMediator mediator) =>
+        app.MapGet("/news",  async (IMediator mediator) =>
         {
             var query = new GetAllNewsQuery();
-            var result = mediator.Send(query);
+            var result = await mediator.Send(query);
 
-            return result;
+            return Results.Ok(result.News);
         }).AllowAnonymous();
 
         app.MapGet("/news/{id}", (INewsService newsService, Guid id) =>
@@ -46,7 +46,7 @@ public static class NewsModule
 
             var result = mediator.Send(createNewsCommand);
 
-            return Results.Ok(result);
+            return Results.Ok(result.Result);
         }).RequireAuthorization();
 
         app.MapPut("/news/{id}", (IMediator mediator, INewsService newsService, UpdateNewsDto updatedNews, Guid id) =>
@@ -55,10 +55,10 @@ public static class NewsModule
             var UpdateCommand = new UpdateNewsCommand { UpdateNewsDto = updatedNews, Id = id };
             var update = mediator.Send(UpdateCommand);
 
-            if (update is null)
+            if (update.Result.News is null)
                 return Results.NotFound("News not found.");
 
-            return Results.Ok(update);
+            return Results.Ok(update.Result);
 
         }).RequireAuthorization();
 
