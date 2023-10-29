@@ -46,7 +46,7 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
         }
 
 
-        [Trait("Type", "Validate Create User")]
+        [Trait("Create", "Validate Create User")]
         [Fact]
         public async Task Create_User_ShouldReturnSuccess()
         {
@@ -60,10 +60,11 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
+
         }
 
 
-        [Trait("Type", "Validate Create User")]
+        [Trait("Create", "Validate Create User Invalid")]
         [Fact]
         public async Task Create_User_ShouldReturnInvalid()
         {
@@ -78,7 +79,6 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
 
             //Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-
         }
 
 

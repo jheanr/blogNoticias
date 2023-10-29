@@ -33,7 +33,7 @@ public static class UserModule
             var createCommand = new CreateUserCommand { User = user };
             var created = mediator.Send(createCommand);
 
-            return Results.Ok(created);
+            return Results.Ok(created.Result);
 
         }).AllowAnonymous();
     }

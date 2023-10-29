@@ -9,11 +9,10 @@ using System.Net.Http.Json;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Tests.Common.Users;
 using System.Net;
-using BlogPetNews.API.Domain.Users;
 
 namespace BlogPetNews.Unit.Tests.Modules.News
 {
-    public class NewsModuleTest: IClassFixture<CustomWebApplicationFactory<Program>>
+    public class NewsModuleTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
         private readonly CustomWebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
@@ -25,7 +24,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
             _factory.AddServiceFake(ServicesFakes());
             _factory.AddServiceFake(AuthenticatedUser());
-           
+
             _client = _factory.CreateClient();
 
         }
@@ -44,7 +43,23 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        [Trait("Type", "Validate Create News")]
+        [Fact]
+        public async Task GetId_News_ShouldReturnSuccess()
+        {
+
+            //Arrange
+            Guid id = Guid.NewGuid();
+
+            // Act
+            var response = await _client.GetAsync($"/news/{id}");
+
+            // Assert   
+            Assert.IsType<HttpResponseMessage>(response);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        }
+
+        [Trait("Create", "Validate Create News")]
         [Fact]
         public async Task Post_News_ShouldReturnSuccess()
         {
@@ -52,11 +67,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
-
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
             HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
@@ -67,7 +78,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        [Trait("Type", "Validate Create News")]
+        [Trait("Create", "Validate Create News Invalid")]
         [Fact]
         public async Task Post_News_ShouldReturnInvalid()
         {
@@ -76,11 +87,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
             news.Title = "";
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
-
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
             HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
@@ -90,19 +97,16 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        [Trait("Type", "Permission Delete")]
+        [Trait("Delete", "Permission Delete Unauthorized")]
         [Fact]
         public async Task Delete_News_ShouldReturnUnauthorized()
         {
 
             //Arrange
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
             HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
@@ -112,19 +116,16 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        [Trait("Type", "Permission Delete")]
+        [Trait("Delete", "Permission Delete")]
         [Fact]
         public async Task Delete_News_ShouldReturnSuccess()
         {
 
             //Arrange
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.Admin;
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.Admin);
 
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
             HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
@@ -142,13 +143,9 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
-
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
             HttpResponseMessage response = await _client.PutAsJsonAsync($"/news/{id}", news);
@@ -162,14 +159,14 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         private static INewsService ServicesFakes()
         {
-
+            #region ServiceFake
             var newsServiceFake = Substitute.For<INewsService>();
 
             //GetAll
-             newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(3));
+            newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(3));
 
             //GetId
-             newsServiceFake.GetById(Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
+            newsServiceFake.GetById(Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
 
             //Update
             newsServiceFake.Update(Arg.Any<Guid>(), Arg.Any<UpdateNewsDto>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
@@ -181,6 +178,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             newsServiceFake.Create(Arg.Any<CreateNewsDto>(), Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
 
             return newsServiceFake;
+            #endregion
 
         }
 
@@ -195,12 +193,15 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        private string TokenTest(User user)
+        private void TokenTest(API.Domain.Enums.RolesUser role)
         {
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = role;
 
             var tokenService = _factory.Services.GetRequiredService<TokenService>();
 
-            return tokenService.GenerateToken(user);
+            var tokenAccess = tokenService.GenerateToken(user);
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
         }
 
