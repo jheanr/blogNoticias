@@ -8,25 +8,29 @@ using NSubstitute;
 using System.Net.Http.Json;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Tests.Common.Users;
-using System.Net;
+using BlogPetNews.Integration.Tests.Util;
+using Newtonsoft.Json;
+using BlogPetNews.API.Domain.UseCases.CreateNews;
 
 namespace BlogPetNews.Unit.Tests.Modules.News
 {
     public class NewsModuleTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly CustomWebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Program> _application;
+        private readonly HttpClient _httpClient;
+        private readonly TestHelpers _testHelpers;
 
-        public NewsModuleTest(CustomWebApplicationFactory<Program> factory)
+        public NewsModuleTest(CustomWebApplicationFactory<Program> application)
         {
 
-            _factory = factory;
+            _application = application;
 
-            _factory.AddServiceFake(ServicesFakes());
-            _factory.AddServiceFake(AuthenticatedUser());
+            _application.AddServiceFake(ServicesFakes());
+            _application.AddServiceFake(AuthenticatedUser());
 
-            _client = _factory.CreateClient();
+            _httpClient = _application.CreateClient();
 
+            _testHelpers = new TestHelpers(_application);
         }
 
 
@@ -35,11 +39,17 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             // Act
-            var response = await _client.GetAsync("/news/");
+            var response = await _httpClient.GetAsync("/news/");
 
             // Assert   
             Assert.IsType<HttpResponseMessage>(response);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            _testHelpers.AssertStatusCodeOk(response);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<List<ReadNewsDto>>(content);
+
+            Assert.True(result!.Count == 10); 
 
         }
 
@@ -51,11 +61,11 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             Guid id = Guid.NewGuid();
 
             // Act
-            var response = await _client.GetAsync($"/news/{id}");
+            var response = await _httpClient.GetAsync($"/news/{id}");
 
             // Assert   
             Assert.IsType<HttpResponseMessage>(response);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
 
         }
 
@@ -70,15 +80,20 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/news/", news);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<CreateNewsCommandResponse>(content);
+
+            Assert.False(result!.News.Id == Guid.Empty);
 
         }
 
-        [Trait("Create", "Validate Create News Invalid")]
+        [Trait("Create", "Validate Create Invalid News")]
         [Fact]
         public async Task Post_News_ShouldReturnInvalid()
         {
@@ -90,16 +105,17 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/news/", news);
 
             // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+            _testHelpers.AssertStatusCodeBadRequest(response);
 
         }
 
         [Trait("Delete", "Permission Delete Unauthorized")]
         [Fact]
-        public async Task Delete_News_ShouldReturnUnauthorized()
+        public async Task Delete_News_ShouldReturnForbidden()
         {
 
             //Arrange
@@ -109,10 +125,10 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/news/{id}");
 
             // Assert
-            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            _testHelpers.AssertStatusCodeForbidden(response);
 
         }
 
@@ -128,10 +144,10 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/news/{id}");
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
 
         }
 
@@ -148,13 +164,34 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.PutAsJsonAsync($"/news/{id}", news);
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/news/{id}", news);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
+
 
         }
+
+        [Trait("Update", "No passing token")]
+        [Fact]
+        public async Task Update_News_ShouldReturnUnauthorized()
+        {
+
+            //Arrange
+            var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
+
+            Guid id = Guid.NewGuid();
+
+            // Act
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/news/{id}", news);
+
+            // Assert
+            _testHelpers.AssertStatusCodeUnauthorized(response);
+
+
+        }
+
 
 
         private static INewsService ServicesFakes()
@@ -163,7 +200,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             var newsServiceFake = Substitute.For<INewsService>();
 
             //GetAll
-            newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(3));
+            newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(10));
 
             //GetId
             newsServiceFake.GetById(Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
@@ -198,10 +235,10 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             var user = UserTestFixture.UserFaker.Generate();
             user.Role = role;
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
+            var tokenService = _application.Services.GetRequiredService<TokenService>();
 
             var tokenAccess = tokenService.GenerateToken(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
         }
 
