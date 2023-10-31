@@ -1,7 +1,7 @@
 using BlogPetNews.API.Service.ViewModels.News;
-using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
 using BlogPetNews.Tests.Common.News;
+using BlogPetNews.Tests.Common.Utils;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 

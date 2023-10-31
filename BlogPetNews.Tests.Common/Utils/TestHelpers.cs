@@ -1,5 +1,4 @@
 ﻿using BlogPetNews.API.Domain.Enums;
-using BlogPetNews.API.Domain.News;
 using BlogPetNews.API.Domain.UseCases.CreateNews;
 using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Domain.Users;
@@ -15,7 +14,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
-namespace BlogPetNews.Integration.Tests.Util
+namespace BlogPetNews.Tests.Common.Utils
 {
     public class TestHelpers
     {
@@ -81,7 +80,7 @@ namespace BlogPetNews.Integration.Tests.Util
             }
         }
 
-        public async Task<News> CreateNews(CustomWebApplicationFactory<Program> _application, News news)
+        public async Task<API.Domain.News.News> CreateNews(CustomWebApplicationFactory<Program> _application, API.Domain.News.News news)
         {
             using (var scope = _application.Services.CreateScope())
             {

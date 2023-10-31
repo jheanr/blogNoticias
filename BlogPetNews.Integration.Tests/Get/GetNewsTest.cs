@@ -1,6 +1,6 @@
 using BlogPetNews.API.Service.ViewModels.News;
-using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
+using BlogPetNews.Tests.Common.Utils;
 using Newtonsoft.Json;
 
 namespace BlogPetNews.Integration.Tests.Get
