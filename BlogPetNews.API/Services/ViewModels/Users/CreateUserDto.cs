@@ -1,7 +1,5 @@
 ﻿using BlogPetNews.API.Domain.Enums;
 using FluentValidation;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace BlogPetNews.API.Service.ViewModels.Users
 {

@@ -8,26 +8,29 @@ using NSubstitute;
 using System.Net.Http.Json;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Tests.Common.Users;
-using System.Net;
-using BlogPetNews.API.Domain.Users;
+using BlogPetNews.Tests.Common.Util;
+using Newtonsoft.Json;
+using BlogPetNews.API.Domain.UseCases.CreateNews;
 
 namespace BlogPetNews.Unit.Tests.Modules.News
 {
-    public class NewsModuleTest: IClassFixture<CustomWebApplicationFactory<Program>>
+    public class NewsModuleTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly CustomWebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Program> _application;
+        private readonly HttpClient _httpClient;
+        private readonly TestHelpers _testHelpers;
 
-        public NewsModuleTest(CustomWebApplicationFactory<Program> factory)
+        public NewsModuleTest(CustomWebApplicationFactory<Program> application)
         {
 
-            _factory = factory;
+            _application = application;
 
-            _factory.AddServiceFake(ServicesFakes());
-            _factory.AddServiceFake(AuthenticatedUser());
-           
-            _client = _factory.CreateClient();
+            _application.AddServiceFake(ServicesFakes());
+            _application.AddServiceFake(AuthenticatedUser());
 
+            _httpClient = _application.CreateClient();
+
+            _testHelpers = new TestHelpers(_application);
         }
 
 
@@ -36,15 +39,37 @@ namespace BlogPetNews.Unit.Tests.Modules.News
         {
 
             // Act
-            var response = await _client.GetAsync("/news/");
+            var response = await _httpClient.GetAsync("/news/");
 
             // Assert   
             Assert.IsType<HttpResponseMessage>(response);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            _testHelpers.AssertStatusCodeOk(response);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<List<ReadNewsDto>>(content);
+
+            Assert.True(result!.Count == 10); 
 
         }
 
-        [Trait("Type", "Validate Create News")]
+        [Fact]
+        public async Task GetId_News_ShouldReturnSuccess()
+        {
+
+            //Arrange
+            Guid id = Guid.NewGuid();
+
+            // Act
+            var response = await _httpClient.GetAsync($"/news/{id}");
+
+            // Assert   
+            Assert.IsType<HttpResponseMessage>(response);
+            _testHelpers.AssertStatusCodeOk(response);
+
+        }
+
+        [Trait("Create", "Validate Create News")]
         [Fact]
         public async Task Post_News_ShouldReturnSuccess()
         {
@@ -52,22 +77,23 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
-
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/news/", news);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<CreateNewsCommandResponse>(content);
+
+            Assert.False(result!.News.Id == Guid.Empty);
 
         }
 
-        [Trait("Type", "Validate Create News")]
+        [Trait("Create", "Validate Create Invalid News")]
         [Fact]
         public async Task Post_News_ShouldReturnInvalid()
         {
@@ -76,61 +102,52 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             var news = NewsTestFixture.CreateNewsDtoFaker.Generate();
             news.Title = "";
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
-
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
             // Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/news/", news);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/news/", news);
 
             // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+            _testHelpers.AssertStatusCodeBadRequest(response);
 
         }
 
-        [Trait("Type", "Permission Delete")]
+        [Trait("Delete", "Permission Delete Unauthorized")]
         [Fact]
-        public async Task Delete_News_ShouldReturnUnauthorized()
+        public async Task Delete_News_ShouldReturnForbidden()
         {
 
             //Arrange
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/news/{id}");
 
             // Assert
-            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            _testHelpers.AssertStatusCodeForbidden(response);
 
         }
 
-        [Trait("Type", "Permission Delete")]
+        [Trait("Delete", "Permission Delete")]
         [Fact]
         public async Task Delete_News_ShouldReturnSuccess()
         {
 
             //Arrange
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.Admin;
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
+            TokenTest(API.Domain.Enums.RolesUser.Admin);
 
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.DeleteAsync($"/news/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/news/{id}");
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
 
         }
 
@@ -142,34 +159,51 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             //Arrange
             var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
 
-            var user = UserTestFixture.UserFaker.Generate();
-            user.Role = API.Domain.Enums.RolesUser.User;
+            TokenTest(API.Domain.Enums.RolesUser.User);
 
-            var tokenAccess = TokenTest(user);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
-
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
-            HttpResponseMessage response = await _client.PutAsJsonAsync($"/news/{id}", news);
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/news/{id}", news);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
+
+
+        }
+
+        [Trait("Update", "No passing token")]
+        [Fact]
+        public async Task Update_News_ShouldReturnUnauthorized()
+        {
+
+            //Arrange
+            var news = NewsTestFixture.UpdateNewsDtoFaker.Generate();
+
+            Guid id = Guid.NewGuid();
+
+            // Act
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/news/{id}", news);
+
+            // Assert
+            _testHelpers.AssertStatusCodeUnauthorized(response);
+
 
         }
 
 
+
         private static INewsService ServicesFakes()
         {
-
+            #region ServiceFake
             var newsServiceFake = Substitute.For<INewsService>();
 
             //GetAll
-             newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(3));
+            newsServiceFake.GetAll().Returns(NewsTestFixture.ReadNewsDtoFaker.Generate(10));
 
             //GetId
-             newsServiceFake.GetById(Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
+            newsServiceFake.GetById(Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
 
             //Update
             newsServiceFake.Update(Arg.Any<Guid>(), Arg.Any<UpdateNewsDto>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
@@ -181,6 +215,7 @@ namespace BlogPetNews.Unit.Tests.Modules.News
             newsServiceFake.Create(Arg.Any<CreateNewsDto>(), Arg.Any<Guid>()).Returns(NewsTestFixture.ReadNewsDtoFaker.Generate());
 
             return newsServiceFake;
+            #endregion
 
         }
 
@@ -195,12 +230,15 @@ namespace BlogPetNews.Unit.Tests.Modules.News
 
         }
 
-        private string TokenTest(User user)
+        private void TokenTest(API.Domain.Enums.RolesUser role)
         {
+            var user = UserTestFixture.UserFaker.Generate();
+            user.Role = role;
 
-            var tokenService = _factory.Services.GetRequiredService<TokenService>();
+            var tokenService = _application.Services.GetRequiredService<TokenService>();
 
-            return tokenService.GenerateToken(user);
+            var tokenAccess = tokenService.GenerateToken(user);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenAccess}");
 
         }
 

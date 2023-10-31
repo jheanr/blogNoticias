@@ -1,27 +1,29 @@
 ﻿using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Service.Users;
 using BlogPetNews.API.Service.ViewModels.Users;
+using BlogPetNews.Tests.Common.Util;
 using BlogPetNews.Tests.Common.Factory;
 using BlogPetNews.Tests.Common.Users;
 using Newtonsoft.Json;
 using NSubstitute;
-using System.Net;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Unit.Tests.Modules.Users
 {
     public class UserModuleTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly CustomWebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Program> _application;
+        private readonly HttpClient _httpClient;
+        private readonly TestHelpers _testHelpers;
 
-        public UserModuleTest(CustomWebApplicationFactory<Program> factory)
+        public UserModuleTest(CustomWebApplicationFactory<Program> application)
         {
-            _factory = factory;
+            _application = application;
 
-            _factory.AddServiceFake(ServicesFakes());
+            _application.AddServiceFake(ServicesFakes());
+            _httpClient = _application.CreateClient();
 
-            _client = _factory.CreateClient();
+            _testHelpers = new TestHelpers(_application);
         }
 
         [Fact]
@@ -32,21 +34,19 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             var login = new { Email = "test@test.com", Password = "123456" };
 
             //Act
-            HttpResponseMessage response = await _client.PostAsync($"/login?email={login.Email}&password={login.Password}", null);
+            HttpResponseMessage response = await _httpClient.PostAsync($"/login?email={login.Email}&password={login.Password}", null);
 
             //Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
 
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<LoginUserCommandResponse>(content);
 
             Assert.DoesNotContain(result!.Token, "Unauthorized Access");
         
-
         }
 
-
-        [Trait("Type", "Validate Create User")]
+        [Trait("Create", "Validate Create User")]
         [Fact]
         public async Task Create_User_ShouldReturnSuccess()
         {
@@ -55,15 +55,15 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             var user = UserTestFixture.CreateUserDtoFaker.Generate();
 
             //Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/create/", user);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/create/", user);
 
             //Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _testHelpers.AssertStatusCodeOk(response);
 
         }
 
 
-        [Trait("Type", "Validate Create User")]
+        [Trait("Create", "Validate Create Invalid User")]
         [Fact]
         public async Task Create_User_ShouldReturnInvalid()
         {
@@ -74,10 +74,10 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             user.Password = "";
 
             //Act
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/create/", user);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/create/", user);
 
             //Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            _testHelpers.AssertStatusCodeBadRequest(response);
 
         }
 
@@ -85,7 +85,7 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
 
         private static IUserService ServicesFakes()
         {
-
+            #region ServiceFake
             var userServiceFake = Substitute.For<IUserService>();
 
             //Create
@@ -95,6 +95,7 @@ namespace BlogPetNews.Unit.Tests.Modules.Users
             userServiceFake.Login(Arg.Any<string>(), Arg.Any<string>()).Returns(UserTestFixture.ReadUserDtoFaker.Generate());
 
             return userServiceFake;
+            #endregion
 
         }
     }
