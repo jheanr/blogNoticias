@@ -8,7 +8,7 @@ using NSubstitute;
 using System.Net.Http.Json;
 using BlogPetNews.API.Infra.Utils;
 using BlogPetNews.Tests.Common.Users;
-using BlogPetNews.Integration.Tests.Util;
+using BlogPetNews.Tests.Common.Util;
 using Newtonsoft.Json;
 using BlogPetNews.API.Domain.UseCases.CreateNews;
 
