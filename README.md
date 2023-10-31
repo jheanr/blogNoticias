@@ -1,4 +1,4 @@
-# Tech Challenge 2: Blog de Notícias com Autenticação e Implantação no Azure CI/CD
+# Tech Challenge 3: Blog de Notícias com Autenticação e Implantação no Azure CI/CD
 
 ## Introdução
 
