@@ -1,7 +1,7 @@
 ﻿using BlogPetNews.API.Domain.UseCases.LoginUser;
 using BlogPetNews.API.Service.Users;
 using BlogPetNews.API.Service.ViewModels.Users;
-using BlogPetNews.Tests.Common.Util;
+using BlogPetNews.Tests.Common.Utils;
 using BlogPetNews.Tests.Common.Factory;
 using BlogPetNews.Tests.Common.Users;
 using Newtonsoft.Json;
