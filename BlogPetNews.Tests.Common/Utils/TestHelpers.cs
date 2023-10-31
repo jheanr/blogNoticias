@@ -14,7 +14,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
-namespace BlogPetNews.Tests.Common.Util
+namespace BlogPetNews.Tests.Common.Utils
 {
     public class TestHelpers
     {
