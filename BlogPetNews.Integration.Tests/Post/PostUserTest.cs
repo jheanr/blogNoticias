@@ -1,7 +1,7 @@
 using BlogPetNews.API.Infra.Utils;
-using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
 using BlogPetNews.Tests.Common.Users;
+using BlogPetNews.Tests.Common.Util;
 using System.Net.Http.Json;
 
 namespace BlogPetNews.Integration.Tests.Post

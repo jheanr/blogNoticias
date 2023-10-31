@@ -1,5 +1,5 @@
-using BlogPetNews.Integration.Tests.Util;
 using BlogPetNews.Tests.Common.Factory;
+using BlogPetNews.Tests.Common.Util;
 
 namespace BlogPetNews.Integration.Tests.Delete
 {
