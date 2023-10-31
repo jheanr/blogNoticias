@@ -22,6 +22,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Login", "Login user with success")]
         public void Login_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -42,6 +43,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Login", "Try login user with null return from repository")]
         public void Login_User_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -58,6 +60,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Create", "Create user with success")]
         public void Create_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -78,6 +81,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Create", "Try creating user with null return from mapper")]
         public void Create_User_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -92,6 +96,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Update", "Update user with success")]
         public void Update_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -115,6 +120,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Update", "Try updating user with null return from repository")]
         public void Update_User_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -130,6 +136,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Delete", "Delete user with success")]
         public void Delete_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -143,6 +150,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Get all user with success")]
         public void GetAll_Users_ShouldReturnSuccess()
         {
             // Arrange
@@ -164,6 +172,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Try getting all user with null return from repository")]
         public void GetAll_Users_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -177,6 +186,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Get user by email with success")]
         public void GetByEmail_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -196,6 +206,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Try getting user by email with null return from repository")]
         public void GetByEmail_User_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -211,6 +222,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Get user by id with success")]
         public void GetById_User_ShouldReturnSuccess()
         {
             // Arrange
@@ -230,6 +242,7 @@ namespace BlogPetNews.Unit.Tests.Services.Users
         }
 
         [Fact]
+        [Trait("Read", "Try getting user by id with null return from repository")]
         public void GetById_User_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange

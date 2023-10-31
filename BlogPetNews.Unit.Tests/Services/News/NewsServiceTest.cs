@@ -22,6 +22,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Create", "Create news with success")]
         public void Create_News_ShouldReturnSuccess()
         {
             //Arrange
@@ -44,6 +45,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Create", "Try creating news with null return from mapper")]
         public void Create_News_ReturnsNull_WhenMapperReturnsNull()
         {
             //Arrange
@@ -60,6 +62,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Update", "Update news with success")]
         public void Update_News_ShouldReturnSuccess()
         {
             //Arrange
@@ -83,6 +86,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Update", "Try updating news with null return from repository")]
         public void Update_News_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -98,6 +102,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Delete", "Delete news with success")]
         public void Delete_News_ShouldReturnSuccess()
         {
             //Arrange
@@ -111,6 +116,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Read", "Get all news with success")]
         public void GetAll_News_ShouldReturnSuccess()
         {
             // Arrange
@@ -130,6 +136,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Read", "Try getting all news with null return from repository")]
         public void GetAll_News_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
@@ -143,6 +150,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Read", "Get news by id with success")]
         public void GetById_News_ShouldReturnSuccess()
         {
             // Arrange
@@ -161,6 +169,7 @@ namespace BlogPetNews.Unit.Tests.Services.News
         }
 
         [Fact]
+        [Trait("Read", "Try getting news by id with null return from repository")]
         public void GetById_News_ReturnsNull_WhenRepositoryReturnsNull()
         {
             // Arrange
