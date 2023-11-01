@@ -64,6 +64,32 @@ Para a remoção de uma notícia, é obrigatório a _role_ de **admin** para exe
 3. **Configurar Variável para as Solicitações**:
    - Ainda na coleção, clique na aba "Variables". Lá, você encontrará uma variável chamada `base_url`.
    - Substitua o valor atual pela URL do ambiente desejado. Essa configuração será propagada para todas as solicitações que utilizam a variável `{{base_url}}`.
+  
+## Testes Automatizados
+
+Nossos testes automatizados foram divididos em três projetos distintos para abranger diferentes aspectos de nossa aplicação:
+
+#### 1. BlogPetNews.Integration.Tests
+
+Este projeto é responsável por executar os testes de integração para as entidades "News" e "Users". Para economizar custos na Azure, optamos por usar um banco de dados em memória em vez do Docker ou um banco de teste. Isso nos permite validar a interação correta entre os componentes de nossa aplicação em um ambiente isolado.
+
+#### 2. BlogPetNews.Unit.Tests
+
+Neste projeto, concentramos nossos testes unitários em duas áreas principais:
+
+- **Camada de Serviço:** Testamos os serviços de "User" e "News". Para garantir que nossos serviços funcionem conforme o esperado, utilizamos o pacote NSubstitute para criar mocks das dependências, como repositórios e mapeadores. Isso nos permite isolar as unidades de código e validar sua funcionalidade individualmente.
+
+- **Camada de Controle (Módulos):** Nesta camada, adotamos uma abordagem híbrida. Usamos o NSubstitute para criar mocks dos serviços, mas também empregamos um CustomWebApplicationFactory para realizar chamadas reais aos endpoints da aplicação. Isso nos ajuda a garantir que nossos controladores estejam corretamente configurados e respondendo adequadamente às solicitações HTTP.
+
+#### 3. BlogPetNews.Tests.Common
+
+Para compartilhar código comum entre nossos projetos de teste, criamos o projeto "BlogPetNews.Tests.Common". Nele, centralizamos classes de fábrica (Fakers) para gerar dados fictícios, usando o pacote "Bogus", e alguns utilitários para auxiliar na criação de testes de integração. Essa abordagem nos ajuda a manter um código de teste organizado e reutilizável em vários projetos.
+
+## Integração do Application Insights
+
+Além da implementação dos testes, adicionamos o Application Insights à nossa aplicação para monitorar seu desempenho e saúde. Essa integração nos permite coletar métricas e registros para melhorar a qualidade e a confiabilidade da aplicação. Configuramos alertas com base em métricas críticas, permitindo-nos responder rapidamente a problemas ou comportamentos indesejados.
+
+A integração do Application Insights é fundamental para manter nossa aplicação sob controle e proporcionar uma experiência de usuário confiável.
 
 ## Conclusão
 
