@@ -1,56 +1,39 @@
 trigger:
-- main
+  branches:
+    include:
+      - testcontainers
 
-resources:
-- repo: self
-
-variables:
-  unitTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Unit.Tests/BlogPetNews.Unit.Tests.csproj'
-  integrationTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj'
-  vmImageName: 'ubuntu-latest'
-
-stages:
-- stage: Test
-  displayName: 'Test Stage'
-  jobs:
-  - job: UnitTests
-    displayName: 'Run Unit Tests'
+jobs:
+  - job: build_and_test
+    displayName: Build and Test
     pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet test $(unitTeste) --configuration Release
-      displayName: 'Run Unit Tests'
-  - job: IntegrationTests
-    displayName: 'Run Integration Tests'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet test $(integrationTeste) --configuration Release
-      displayName: 'Run Integration Tests'
+      vmImage: 'ubuntu-latest'
 
-- stage: BuildAndPush
-  displayName: 'Build and Push Stage'
-  jobs:
-  - job: BuildContainer
-    displayName: 'Build and Push Container ACR'
-    pool:
-      vmImage: $(vmImageName)
     steps:
-    - task: DockerCompose@0
-      inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: '$(AZURE_SUBSCRIPTION)'
-        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
-        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
-        action: 'Build services'
-        includeSourceTags: true
-        includeLatestTag: true
-    - task: DockerCompose@0
-      inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: '$(AZURE_SUBSCRIPTION)'
-        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
-        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
-        action: 'Push services'
-        includeSourceTags: true
-        includeLatestTag: true
+      - checkout: self
+
+      - task: UseDotNet@2
+        displayName: Setup .NET
+        inputs:
+          packageType: 'sdk'
+          version: '6.x'
+
+      - task: DotNetCoreCLI@2
+        displayName: Restore dependencies
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          command: 'build'
+          projects: '**/*.csproj'
+          arguments: '--configuration Release'
+
+      - task: DotNetCoreCLI@2
+        displayName: Run tests
+        inputs:
+          command: 'test'
+          projects: '**/*.csproj'
+          arguments: '--configuration Release'
