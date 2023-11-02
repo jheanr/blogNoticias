@@ -1,48 +1,39 @@
 trigger:
-- testcontainers
+  branches:
+    include:
+      - main
 
-resources:
-- repo: self
+jobs:
+  - job: build_and_test
+    displayName: Build and Test
+    pool:
+      vmImage: 'ubuntu-latest'
 
-variables:
-  unitTest: '$(System.DefaultWorkingDirectory)/BlogPetNews.Unit.Tests/BlogPetNews.Unit.Tests.csproj'
-  integrationTest: '$(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj'
-  api: '$(System.DefaultWorkingDirectory)/BlogPetNews.API/BlogPetNews.API.csproj'
-  vmImageName: 'ubuntu-latest'
+    steps:
+      - checkout: self
 
-stages:
-- stage: Build
-  displayName: 'Build Stage'
-  jobs:
-  - job: Restore
-    displayName: 'Restore dependencies'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet restore $(api)
-      displayName: 'Restore dependencies'
-  - job: Build
-    displayName: 'Build'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet build $(api) --configuration Release
-      displayName: 'Build'
+      - task: UseDotNet@2
+        displayName: Setup .NET
+        inputs:
+          packageType: 'sdk'
+          version: '7.x'
 
-- stage: Test
-  displayName: 'Test Stage'
-  jobs:
-  - job: UnitTests
-    displayName: 'Run Unit Tests'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet test $(unitTeste) --configuration Release
-      displayName: 'Run Unit Tests'
-  - job: IntegrationTests
-    displayName: 'Run Integration Tests'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: dotnet test $(integrationTeste) --configuration Release
-      displayName: 'Run Integration Tests'
+      - task: DotNetCoreCLI@2
+        displayName: Restore dependencies
+        inputs:
+          command: 'restore'
+          projects: '**/*.sln'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          command: 'build'
+          projects: '**/*.sln'
+          arguments: '--configuration Release'
+
+      - task: DotNetCoreCLI@2
+        displayName: Run tests
+        inputs:
+          command: 'test'
+          projects: '**/*.sln'
+          arguments: '--configuration Release'
