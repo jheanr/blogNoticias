@@ -3,19 +3,37 @@ trigger:
     include:
       - testcontainers
 
-pool: 'Default'
+jobs:
+  - job: build_and_test
+    displayName: Build and Test
+    pool:
+      vmImage: 'ubuntu-latest'
 
-steps:
-- task: UseDotNet@2
-  inputs:
-    version: '6.x'
-    packageType: 'sdk'
+    steps:
+      - checkout: self
 
-- script: dotnet restore
-  displayName: 'Restore NuGet packages'
+      - task: UseDotNet@2
+        displayName: Setup .NET
+        inputs:
+          packageType: 'sdk'
+          version: '6.x'
 
-- script: dotnet build --configuration Release --no-restore
-  displayName: 'Build'
+      - task: DotNetCoreCLI@2
+        displayName: Restore dependencies
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
 
-- script: dotnet test --configuration Release --no-restore
-  displayName: 'Run Tests'
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          command: 'build'
+          projects: '**/*.csproj'
+          arguments: '--configuration Release'
+
+      - task: DotNetCoreCLI@2
+        displayName: Run tests
+        inputs:
+          command: 'test'
+          projects: '**/*.csproj'
+          arguments: '--configuration Release'
