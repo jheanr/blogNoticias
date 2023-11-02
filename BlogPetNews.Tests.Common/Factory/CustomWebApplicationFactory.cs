@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Testcontainers.MsSql;
+using Xunit;
 
 namespace BlogPetNews.Tests.Common.Factory
 {
-    public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Program> where Program : class
+    public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Program>, IAsyncLifetime where Program : class
     {
-
         private readonly Dictionary<Type, object> _serviceFakes = new Dictionary<Type, object>();
+        private readonly MsSqlContainer _sqlServerContainer = new MsSqlBuilder().Build();
 
         public void AddServiceFake<TService>(TService service)
         {
@@ -20,17 +21,14 @@ namespace BlogPetNews.Tests.Common.Factory
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            var root = new InMemoryDatabaseRoot();
-
             builder.ConfigureServices((context, services) =>
             {
-
                 ReplaceServicesWithFakes(services);
 
                 services.RemoveAll(typeof(DbContextOptions<BlogPetNewsDbContext>));
                 services.AddDbContext<BlogPetNewsDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("PetNewsDb",root);
+                    options.UseSqlServer(_sqlServerContainer.GetConnectionString());
                 });
 
                 base.ConfigureWebHost(builder);
@@ -46,6 +44,14 @@ namespace BlogPetNews.Tests.Common.Factory
             }
         }
 
+        public async Task InitializeAsync()
+        {
+            await _sqlServerContainer.StartAsync();
+        }
 
+        async Task IAsyncLifetime.DisposeAsync()
+        { 
+            await _sqlServerContainer.StopAsync();
+        }
     }
 }

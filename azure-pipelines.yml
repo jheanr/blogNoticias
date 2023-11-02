@@ -1,15 +1,34 @@
 trigger:
-- main
+- testcontainers
 
 resources:
 - repo: self
 
 variables:
-  unitTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Unit.Tests/BlogPetNews.Unit.Tests.csproj'
-  integrationTeste: '$(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj'
+  unitTest: '$(System.DefaultWorkingDirectory)/BlogPetNews.Unit.Tests/BlogPetNews.Unit.Tests.csproj'
+  integrationTest: '$(System.DefaultWorkingDirectory)/BlogPetNews.Integration.Tests/BlogPetNews.Integration.Tests.csproj'
+  api: '$(System.DefaultWorkingDirectory)/BlogPetNews.API/BlogPetNews.API.csproj'
   vmImageName: 'ubuntu-latest'
 
 stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: Restore
+    displayName: 'Restore dependencies'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - script: dotnet restore $(api)
+      displayName: 'Restore dependencies'
+  - job: Build
+    displayName: 'Build'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - script: dotnet build $(api) --configuration Release
+      displayName: 'Build'
+
 - stage: Test
   displayName: 'Test Stage'
   jobs:
@@ -27,30 +46,3 @@ stages:
     steps:
     - script: dotnet test $(integrationTeste) --configuration Release
       displayName: 'Run Integration Tests'
-
-- stage: BuildAndPush
-  displayName: 'Build and Push Stage'
-  jobs:
-  - job: BuildContainer
-    displayName: 'Build and Push Container ACR'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: DockerCompose@0
-      inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: '$(AZURE_SUBSCRIPTION)'
-        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
-        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
-        action: 'Build services'
-        includeSourceTags: true
-        includeLatestTag: true
-    - task: DockerCompose@0
-      inputs:
-        containerregistrytype: 'Azure Container Registry'
-        azureSubscription: '$(AZURE_SUBSCRIPTION)'
-        azureContainerRegistry: '$(AZURE_CONTAINER_REGISTRY)'
-        dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
-        action: 'Push services'
-        includeSourceTags: true
-        includeLatestTag: true
