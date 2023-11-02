@@ -71,7 +71,7 @@ Nossos testes automatizados foram divididos em três projetos distintos para abr
 
 #### 1. BlogPetNews.Integration.Tests
 
-Este projeto é responsável por executar os testes de integração para as entidades "News" e "Users". Para economizar custos na Azure, optamos por usar um banco de dados em memória em vez do Docker ou um banco de teste. Isso nos permite validar a interação correta entre os componentes de nossa aplicação em um ambiente isolado.
+Este projeto é responsável por executar os testes de integração para as entidades "News" e "Users". Para economizar custos na Azure, optamos por desativar provisoriamente a parte do ACI/ACR, entretanto, agora nosso pipeline possui a execução de testes de integração via container, usando os pacotes "Testcontainers" e "Testcontainers.MsSql" que nos permite criar validar a interação correta entre os componentes de nossa aplicação em um ambiente isolado em container. Isso nos permite testar em um ambiente mais próximo do ambiente de produção, garantindo uma validação mais precisa das interações entre componentes da aplicação.
 
 #### 2. BlogPetNews.Unit.Tests
 
